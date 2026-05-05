@@ -421,6 +421,9 @@ func main() {
 	http.HandleFunc("/api/danismanlar", corsMiddleware(getDanismanlarHandler)) // YENİ
 	http.HandleFunc("/api/portfoyler", corsMiddleware(getPortfoylerHandler))   // YENİ
 	http.HandleFunc("/api/kayitlar", corsMiddleware(getKayitlarHandler))       // YENİ: Admin Paneli İçin
+	http.HandleFunc("/api/danisman/ekle", danismanEkle)
+	http.HandleFunc("/api/danisman/guncelle", danismanGuncelle)
+	http.HandleFunc("/api/danisman/sil", danismanSil)
 
 	// Bulut sistemleri (Koyeb/Render) portu kendisi atar, onu yakalıyoruz
 	port := os.Getenv("PORT")
