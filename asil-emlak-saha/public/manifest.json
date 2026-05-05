@@ -1,0 +1,20 @@
+{
+  "short_name": "Asil Emlak",
+  "name": "Asil Emlak Saha Otomasyonu",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#d9534f",
+  "background_color": "#ffffff"
+}
