@@ -1,8 +1,131 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import './App.css'
 import html2pdf from 'html2pdf.js';
+
+// --- YAN MENÜ (SIDEBAR) BİLEŞENİ ---
+function YanMenu() {
+  const [acik, setAcik] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const menuGecis = (yol) => {
+    navigate(yol);
+    setAcik(false);
+  };
+
+  return (
+    <>
+      <button 
+        onClick={() => setAcik(true)} 
+        style={{ position: 'fixed', top: '15px', left: '15px', zIndex: 1000, backgroundColor: '#d9534f', color: 'white', border: 'none', borderRadius: '5px', width: '40px', height: '40px', fontSize: '24px', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}
+      >
+        ☰
+      </button>
+
+      {acik && (
+        <div 
+          onClick={() => setAcik(false)} 
+          style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1001 }}
+        />
+      )}
+
+      <div style={{ position: 'fixed', top: 0, left: acik ? '0' : '-280px', width: '250px', height: '100%', backgroundColor: '#fff', zIndex: 1002, transition: '0.3s ease', boxShadow: '2px 0 10px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '20px', backgroundColor: '#d9534f', color: 'white', textAlign: 'center' }}>
+          <h3 style={{ margin: 0 }}>Asil Emlak</h3>
+          <p style={{ margin: 0, fontSize: '12px', opacity: 0.8 }}>Sistem Menüsü</p>
+        </div>
+        
+        <div style={{ padding: '15px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <button onClick={() => menuGecis('/')} style={{ padding: '12px', textAlign: 'left', backgroundColor: location.pathname === '/' ? '#f0f0f0' : 'transparent', border: 'none', borderRadius: '5px', fontSize: '15px', cursor: 'pointer', fontWeight: location.pathname === '/' ? 'bold' : 'normal' }}>🏠 Saha Paneli (Ana Sayfa)</button>
+          <button onClick={() => menuGecis('/belge')} style={{ padding: '12px', textAlign: 'left', backgroundColor: location.pathname === '/belge' ? '#f0f0f0' : 'transparent', border: 'none', borderRadius: '5px', fontSize: '15px', cursor: 'pointer', fontWeight: location.pathname === '/belge' ? 'bold' : 'normal' }}>📄 Boş Belge Şablonu</button>
+          <button onClick={() => menuGecis('/danismanlar')} style={{ padding: '12px', textAlign: 'left', backgroundColor: location.pathname === '/danismanlar' ? '#f0f0f0' : 'transparent', border: 'none', borderRadius: '5px', fontSize: '15px', cursor: 'pointer', fontWeight: location.pathname === '/danismanlar' ? 'bold' : 'normal' }}>👥 Danışman Yönetimi</button>
+          <button onClick={() => menuGecis('/admin')} style={{ padding: '12px', textAlign: 'left', backgroundColor: location.pathname === '/admin' ? '#f0f0f0' : 'transparent', border: 'none', borderRadius: '5px', fontSize: '15px', cursor: 'pointer', fontWeight: location.pathname === '/admin' ? 'bold' : 'normal' }}>⚙️ Yönetici Paneli</button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// --- DANIŞMAN YÖNETİMİ SAYFASI ---
+function DanismanYonetimi() {
+  const [danismanlar, setDanismanlar] = useState([]);
+  const [form, setForm] = useState({ id: null, ad_soyad: '', telefon: '' });
+  const [duzenleniyorMu, setDuzenleniyorMu] = useState(false);
+
+  const danismanlariGetir = () => {
+    fetch('https://asil-emlak-api.onrender.com/api/danismanlar')
+      .then(res => res.json())
+      .then(data => setDanismanlar(data || []))
+      .catch(err => console.error(err));
+  };
+
+  useEffect(() => { danismanlariGetir(); }, []);
+
+  const kaydet = async (e) => {
+    e.preventDefault();
+    const url = duzenleniyorMu ? 'https://asil-emlak-api.onrender.com/api/danisman/guncelle' : 'https://asil-emlak-api.onrender.com/api/danisman/ekle';
+    const method = duzenleniyorMu ? 'PUT' : 'POST';
+
+    const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+    const data = await res.json();
+
+    if(data.basarili) {
+      Swal.fire({ icon: 'success', title: 'Başarılı', timer: 1500, showConfirmButton: false });
+      setForm({ id: null, ad_soyad: '', telefon: '' });
+      setDuzenleniyorMu(false);
+      danismanlariGetir();
+    }
+  };
+
+  const sil = async (id) => {
+    const onay = await Swal.fire({ title: 'Emin misiniz?', text: "Danışman silinecek!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6', confirmButtonText: 'Evet, Sil!' });
+    if(onay.isConfirmed) {
+      await fetch(`https://asil-emlak-api.onrender.com/api/danisman/sil?id=${id}`, { method: 'DELETE' });
+      danismanlariGetir();
+    }
+  };
+
+  const inputStyle = { width: '100%', padding: '10px', marginTop: '5px', marginBottom: '15px', border: '1px solid #ccc', borderRadius: '5px', boxSizing: 'border-box' };
+
+  return (
+    <div style={{ padding: '20px', paddingTop: '60px', maxWidth: '600px', margin: '0 auto', fontFamily: 'sans-serif' }}>
+      <h2 style={{ color: '#333', borderBottom: '2px solid #d9534f', paddingBottom: '10px' }}>👥 Danışman Yönetimi</h2>
+      
+      <div style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px', marginBottom: '20px', border: '1px solid #ddd' }}>
+        <h3 style={{ marginTop: 0, fontSize: '16px' }}>{duzenleniyorMu ? 'Danışmanı Güncelle' : 'Yeni Danışman Ekle'}</h3>
+        <form onSubmit={kaydet}>
+          <label style={{ fontSize: '14px', fontWeight: 'bold' }}>Ad Soyad:</label>
+          <input type="text" required value={form.ad_soyad} onChange={e => setForm({...form, ad_soyad: e.target.value})} style={inputStyle} />
+          
+          <label style={{ fontSize: '14px', fontWeight: 'bold' }}>Telefon (Sisteme kayıtlı numara):</label>
+          <input type="text" required value={form.telefon} onChange={e => setForm({...form, telefon: e.target.value})} style={inputStyle} placeholder="Örn: 5551234567" />
+          
+          <button type="submit" style={{ backgroundColor: duzenleniyorMu ? '#007bff' : '#28a745', color: '#fff', border: 'none', padding: '10px 15px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}>
+            {duzenleniyorMu ? 'Güncelle' : 'Ekle'}
+          </button>
+          {duzenleniyorMu && <button type="button" onClick={() => { setDuzenleniyorMu(false); setForm({id:null, ad_soyad:'', telefon:''}); }} style={{ backgroundColor: 'transparent', color: '#dc3545', border: 'none', padding: '10px', width: '100%', cursor: 'pointer', textDecoration: 'underline', marginTop: '5px' }}>İptal</button>}
+        </form>
+      </div>
+
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        {danismanlar.map(d => (
+          <li key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', padding: '15px', borderRadius: '8px', marginBottom: '10px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', border: '1px solid #eee' }}>
+            <div>
+              <strong style={{ fontSize: '15px' }}>{d.ad_soyad}</strong><br/>
+              <small style={{ color: '#666' }}>{d.telefon}</small>
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button type="button" onClick={() => { setForm(d); setDuzenleniyorMu(true); window.scrollTo(0,0); }} style={{ backgroundColor: '#ffc107', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>✏️</button>
+              <button type="button" onClick={() => sil(d.id)} style={{ backgroundColor: '#dc3545', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>🗑️</button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 // --------------------------------------------------------
 // 1. SAYFA: SÖZLEŞME VE KVKK BELGESİ
@@ -473,6 +596,7 @@ function App() {
         <Route path="/" element={<SahaPaneli />} />
         <Route path="/belge" element={<BelgeSayfasi />} />
         <Route path="/admin" element={<AdminPaneli />} />
+        <Route path="/danismanlar" element={<DanismanYonetimi />} />
       </Routes>
     </>
   )
