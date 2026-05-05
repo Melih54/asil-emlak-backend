@@ -182,6 +182,11 @@ function SahaPaneli() {
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
         <img src="/logo.png" alt="Asil Emlak Logo" style={{ height: '70px', objectFit: 'contain' }} onError={(e) => e.target.style.display = 'none'} />
         <h2 style={{ color: '#d9534f', margin: '10px 0 0 0', fontSize: '24px', fontWeight: '800' }}>Asil Emlak Saha</h2>
+        <button 
+          onClick={() => navigate('/belge')} 
+          style={{ marginTop: '15px', backgroundColor: '#6c757d', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold', boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>
+          📄 Boş Belge Şablonu
+        </button>
       </div>
       
       {adim === 1 && (
