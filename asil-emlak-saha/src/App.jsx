@@ -136,7 +136,7 @@ function BelgeSayfasi() {
   return (
     <div style={{ padding: '15px', width: '100%', maxWidth: '800px', boxSizing: 'border-box', margin: '15px auto', fontFamily: 'serif', lineHeight: '1.6', color: '#333', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
       <div style={{ borderBottom: '2px solid #333', paddingBottom: '10px', marginBottom: '20px', textAlign: 'center' }}>
-        <img src="/logo1.png" alt="Asil Emlak Logo" style={{ height: '60px', objectFit: 'contain', marginBottom: '10px' }} onError={(e) => e.target.style.display = 'none'} />
+        <img src="/logo.png" alt="Asil Emlak Logo" style={{ height: '60px', objectFit: 'contain', marginBottom: '10px' }} onError={(e) => e.target.style.display = 'none'} />
         <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>TAŞINMAZ YER GÖSTERME SÖZLEŞMESİ</h2>
       </div>
 
@@ -303,7 +303,7 @@ function SahaPaneli() {
   return (
     <div style={{ padding: '15px', width: '100%', maxWidth: '500px', boxSizing: 'border-box', margin: '0 auto', fontFamily: 'sans-serif' }}>
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <img src="/logo.png" alt="Asil Emlak Logo" style={{ height: '70px', objectFit: 'contain' }} onError={(e) => e.target.style.display = 'none'} />
+        <img src="/logo1.png" alt="Asil Emlak Logo" style={{ height: '70px', objectFit: 'contain' }} onError={(e) => e.target.style.display = 'none'} />
         <h2 style={{ color: '#d9534f', margin: '10px 0 0 0', fontSize: '24px', fontWeight: '800' }}>Asil Emlak Saha</h2>
         <button 
           onClick={() => navigate('/belge')} 
