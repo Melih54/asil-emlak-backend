@@ -592,6 +592,9 @@ function App() {
           padding: 0; 
         }
       `}</style>
+
+      <YanMenu />
+
       <Routes>
         <Route path="/" element={<SahaPaneli />} />
         <Route path="/belge" element={<BelgeSayfasi />} />
