@@ -3,12 +3,12 @@
   "name": "Asil Emlak Saha Otomasyonu",
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "/logo1.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/logo.png",
+      "src": "/logo1.png",
       "type": "image/png",
       "sizes": "512x512"
     }
