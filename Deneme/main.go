@@ -408,6 +408,70 @@ func getKayitlarHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(kayitlar)
 }
 
+// --- YENİ EKLENEN DANIŞMAN YÖNETİMİ FONKSİYONLARI ---
+// --- EKSİK OLAN CORS FONKSİYONU ---
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+}
+
+func danismanEkle(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	var req struct {
+		AdSoyad string `json:"ad_soyad"`
+		Telefon string `json:"telefon"`
+	}
+	json.NewDecoder(r.Body).Decode(&req)
+
+	_, err := db.Exec("INSERT INTO danismanlar (ad_soyad, telefon) VALUES (?, ?)", req.AdSoyad, req.Telefon)
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]interface{}{"basarili": false, "mesaj": "Veritabanı hatası"})
+		return
+	}
+	json.NewEncoder(w).Encode(map[string]interface{}{"basarili": true, "mesaj": "Danışman başarıyla eklendi"})
+}
+
+func danismanGuncelle(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	var req struct {
+		Id      int    `json:"id"`
+		AdSoyad string `json:"ad_soyad"`
+		Telefon string `json:"telefon"`
+	}
+	json.NewDecoder(r.Body).Decode(&req)
+
+	_, err := db.Exec("UPDATE danismanlar SET ad_soyad = ?, telefon = ? WHERE id = ?", req.AdSoyad, req.Telefon, req.Id)
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]interface{}{"basarili": false, "mesaj": "Güncellenemedi"})
+		return
+	}
+	json.NewEncoder(w).Encode(map[string]interface{}{"basarili": true})
+}
+
+func danismanSil(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	id := r.URL.Query().Get("id")
+	_, err := db.Exec("DELETE FROM danismanlar WHERE id = ?", id)
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]interface{}{"basarili": false, "mesaj": "Silinemedi"})
+		return
+	}
+	json.NewEncoder(w).Encode(map[string]interface{}{"basarili": true})
+}
+
 func main() {
 	godotenv.Load() // .env dosyasını yükler
 	initDB()
