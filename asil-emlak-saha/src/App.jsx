@@ -140,7 +140,7 @@ function BelgeSayfasi() {
     <div className="container container-md">
       <div className="card" style={{ fontFamily: 'serif', lineHeight: '1.6', color: '#333', padding: '40px' }}>
         <div style={{ borderBottom: '2px solid #333', paddingBottom: '10px', marginBottom: '20px', textAlign: 'center' }}>
-          <img src="/logo1.png" alt="Asil Emlak Logo" style={{ height: '60px', objectFit: 'contain', marginBottom: '10px' }} onError={(e) => e.target.style.display = 'none'} />
+          <img src="/logo.png" alt="Asil Emlak Logo" style={{ height: '60px', objectFit: 'contain', marginBottom: '10px' }} onError={(e) => e.target.style.display = 'none'} />
           <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>TAŞINMAZ YER GÖSTERME SÖZLEŞMESİ</h2>
         </div>
 
@@ -237,7 +237,7 @@ function SahaPaneli() {
   return (
     <div className="container">
       <div className="header-logo">
-        <img src="/logo.png" alt="Asil Emlak Logo" onError={(e) => e.target.style.display = 'none'} />
+        <img src="/logo1.png" alt="Asil Emlak Logo" onError={(e) => e.target.style.display = 'none'} />
         <button onClick={() => navigate('/belge')} className="btn btn-secondary mt-4" style={{ borderRadius: '30px', fontSize: '13px' }}>📄 Belge Şablonu</button>
       </div>
       
