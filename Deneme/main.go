@@ -354,6 +354,7 @@ func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 type Kayit struct {
 	ID                int            `json:"id"`
 	DanismanAd        string         `json:"danisman_ad"`
+	DanismanTelefon   sql.NullString `json:"danisman_telefon"` // YENİ EKLENDİ
 	MusteriAdSoyad    string         `json:"musteri_ad_soyad"`
 	MusteriTC         string         `json:"musteri_tc"`
 	MusteriTelefon    string         `json:"musteri_telefon"`
