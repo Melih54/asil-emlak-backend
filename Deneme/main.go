@@ -354,7 +354,7 @@ func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 type Kayit struct {
 	ID                int            `json:"id"`
 	DanismanAd        string         `json:"danisman_ad"`
-	DanismanTelefon   sql.NullString `json:"danisman_telefon"` // YENİ EKLENDİ
+	DanismanTelefon   string         `json:"danisman_telefon"` // YENİ EKLENDİ
 	MusteriAdSoyad    string         `json:"musteri_ad_soyad"`
 	MusteriTC         string         `json:"musteri_tc"`
 	MusteriTelefon    string         `json:"musteri_telefon"`
@@ -373,9 +373,9 @@ type Kayit struct {
 func getKayitlarHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	// Sorguya y.tasinmaz_ada_parsel eklendi
+	// Sorguya d.telefon eklendi
 	query := `
-		SELECT y.id, d.ad_soyad, y.musteri_ad_soyad, y.musteri_tc, y.musteri_telefon, 
+		SELECT y.id, d.ad_soyad, d.telefon, y.musteri_ad_soyad, y.musteri_tc, y.musteri_telefon, 
 		       y.tasinmaz_adres, y.tasinmaz_ada_parsel, y.islem_turu, y.bedel, y.durum, 
 		       CAST(y.olusturulma_tarihi AS CHAR), 
 		       CAST(y.onaylanma_tarihi AS CHAR), 
@@ -394,8 +394,8 @@ func getKayitlarHandler(w http.ResponseWriter, r *http.Request) {
 	var kayitlar []Kayit
 	for rows.Next() {
 		var k Kayit
-		// rows.Scan içine &k.TasinmazAdaParsel eklendi
-		err := rows.Scan(&k.ID, &k.DanismanAd, &k.MusteriAdSoyad, &k.MusteriTC, &k.MusteriTelefon,
+		// rows.Scan içine &k.DanismanTelefon eklendi
+		err := rows.Scan(&k.ID, &k.DanismanAd, &k.DanismanTelefon, &k.MusteriAdSoyad, &k.MusteriTC, &k.MusteriTelefon,
 			&k.TasinmazAdres, &k.TasinmazAdaParsel, &k.IslemTuru, &k.Bedel, &k.Durum,
 			&k.OlusturulmaTarihi, &k.OnayZamani, &k.MusteriIP, &k.Konum)
 
