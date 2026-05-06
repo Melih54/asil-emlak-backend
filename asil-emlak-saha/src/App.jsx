@@ -15,33 +15,25 @@ function YanMenu() {
     setAcik(false);
   };
 
+  const aktifMi = (yol) => location.pathname === yol ? "sidebar-item active" : "sidebar-item";
+
   return (
     <>
-      <button 
-        onClick={() => setAcik(true)} 
-        style={{ position: 'fixed', top: '15px', left: '15px', zIndex: 1000, backgroundColor: '#d9534f', color: 'white', border: 'none', borderRadius: '5px', width: '40px', height: '40px', fontSize: '24px', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}
-      >
-        ☰
-      </button>
+      <button onClick={() => setAcik(true)} className="hamburger-btn">☰</button>
 
-      {acik && (
-        <div 
-          onClick={() => setAcik(false)} 
-          style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1001 }}
-        />
-      )}
+      {acik && <div onClick={() => setAcik(false)} className="sidebar-overlay" />}
 
-      <div style={{ position: 'fixed', top: 0, left: acik ? '0' : '-280px', width: '250px', height: '100%', backgroundColor: '#fff', zIndex: 1002, transition: '0.3s ease', boxShadow: '2px 0 10px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ padding: '20px', backgroundColor: '#d9534f', color: 'white', textAlign: 'center' }}>
-          <h3 style={{ margin: 0 }}>Asil Emlak</h3>
-          <p style={{ margin: 0, fontSize: '12px', opacity: 0.8 }}>Sistem Menüsü</p>
+      <div className="sidebar" style={{ left: acik ? '0' : '-280px' }}>
+        <div className="sidebar-header">
+          <h3>Asil Emlak</h3>
+          <p>Sistem Menüsü</p>
         </div>
         
-        <div style={{ padding: '15px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <button onClick={() => menuGecis('/')} style={{ padding: '12px', textAlign: 'left', backgroundColor: location.pathname === '/' ? '#f0f0f0' : 'transparent', border: 'none', borderRadius: '5px', fontSize: '15px', cursor: 'pointer', fontWeight: location.pathname === '/' ? 'bold' : 'normal' }}>🏠 Saha Paneli (Ana Sayfa)</button>
-          <button onClick={() => menuGecis('/belge')} style={{ padding: '12px', textAlign: 'left', backgroundColor: location.pathname === '/belge' ? '#f0f0f0' : 'transparent', border: 'none', borderRadius: '5px', fontSize: '15px', cursor: 'pointer', fontWeight: location.pathname === '/belge' ? 'bold' : 'normal' }}>📄 Boş Belge Şablonu</button>
-          <button onClick={() => menuGecis('/danismanlar')} style={{ padding: '12px', textAlign: 'left', backgroundColor: location.pathname === '/danismanlar' ? '#f0f0f0' : 'transparent', border: 'none', borderRadius: '5px', fontSize: '15px', cursor: 'pointer', fontWeight: location.pathname === '/danismanlar' ? 'bold' : 'normal' }}>👥 Danışman Yönetimi</button>
-          <button onClick={() => menuGecis('/admin')} style={{ padding: '12px', textAlign: 'left', backgroundColor: location.pathname === '/admin' ? '#f0f0f0' : 'transparent', border: 'none', borderRadius: '5px', fontSize: '15px', cursor: 'pointer', fontWeight: location.pathname === '/admin' ? 'bold' : 'normal' }}>⚙️ Yönetici Paneli</button>
+        <div className="sidebar-menu">
+          <button onClick={() => menuGecis('/')} className={aktifMi('/')}>🏠 Saha Paneli</button>
+          <button onClick={() => menuGecis('/belge')} className={aktifMi('/belge')}>📄 Boş Belge Şablonu</button>
+          <button onClick={() => menuGecis('/danismanlar')} className={aktifMi('/danismanlar')}>👥 Danışman Yönetimi</button>
+          <button onClick={() => menuGecis('/admin')} className={aktifMi('/admin')}>⚙️ Yönetici Paneli</button>
         </div>
       </div>
     </>
@@ -87,38 +79,47 @@ function DanismanYonetimi() {
     }
   };
 
-  const inputStyle = { width: '100%', padding: '10px', marginTop: '5px', marginBottom: '15px', border: '1px solid #ccc', borderRadius: '5px', boxSizing: 'border-box' };
-
   return (
-    <div style={{ padding: '20px', paddingTop: '60px', maxWidth: '600px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      <h2 style={{ color: '#333', borderBottom: '2px solid #d9534f', paddingBottom: '10px' }}>👥 Danışman Yönetimi</h2>
+    <div className="container">
+      <div className="page-title">
+        <h2 className="mb-0">👥 Danışman Yönetimi</h2>
+      </div>
       
-      <div style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px', marginBottom: '20px', border: '1px solid #ddd' }}>
-        <h3 style={{ marginTop: 0, fontSize: '16px' }}>{duzenleniyorMu ? 'Danışmanı Güncelle' : 'Yeni Danışman Ekle'}</h3>
+      <div className="card">
+        <h3 style={{ fontSize: '18px', marginBottom: '16px' }}>{duzenleniyorMu ? 'Danışmanı Güncelle' : 'Yeni Danışman Ekle'}</h3>
         <form onSubmit={kaydet}>
-          <label style={{ fontSize: '14px', fontWeight: 'bold' }}>Ad Soyad:</label>
-          <input type="text" required value={form.ad_soyad} onChange={e => setForm({...form, ad_soyad: e.target.value})} style={inputStyle} />
+          <div className="form-group">
+            <label>Ad Soyad:</label>
+            <input type="text" required value={form.ad_soyad} onChange={e => setForm({...form, ad_soyad: e.target.value})} />
+          </div>
           
-          <label style={{ fontSize: '14px', fontWeight: 'bold' }}>Telefon (Sisteme kayıtlı numara):</label>
-          <input type="text" required value={form.telefon} onChange={e => setForm({...form, telefon: e.target.value})} style={inputStyle} placeholder="Örn: 5551234567" />
+          <div className="form-group">
+            <label>Telefon (Sisteme kayıtlı numara):</label>
+            <input type="text" required value={form.telefon} onChange={e => setForm({...form, telefon: e.target.value})} placeholder="Örn: 5551234567" />
+          </div>
           
-          <button type="submit" style={{ backgroundColor: duzenleniyorMu ? '#007bff' : '#28a745', color: '#fff', border: 'none', padding: '10px 15px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}>
+          <button type="submit" className={`btn btn-block ${duzenleniyorMu ? 'btn-secondary' : 'btn-success'}`}>
             {duzenleniyorMu ? 'Güncelle' : 'Ekle'}
           </button>
-          {duzenleniyorMu && <button type="button" onClick={() => { setDuzenleniyorMu(false); setForm({id:null, ad_soyad:'', telefon:''}); }} style={{ backgroundColor: 'transparent', color: '#dc3545', border: 'none', padding: '10px', width: '100%', cursor: 'pointer', textDecoration: 'underline', marginTop: '5px' }}>İptal</button>}
+          
+          {duzenleniyorMu && (
+            <button type="button" onClick={() => { setDuzenleniyorMu(false); setForm({id:null, ad_soyad:'', telefon:''}); }} className="btn btn-block btn-outline">
+              İptal
+            </button>
+          )}
         </form>
       </div>
 
       <ul style={{ listStyle: 'none', padding: 0 }}>
         {danismanlar.map(d => (
-          <li key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', padding: '15px', borderRadius: '8px', marginBottom: '10px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', border: '1px solid #eee' }}>
-            <div>
-              <strong style={{ fontSize: '15px' }}>{d.ad_soyad}</strong><br/>
-              <small style={{ color: '#666' }}>{d.telefon}</small>
+          <li key={d.id} className="list-item">
+            <div className="list-item-content">
+              <strong>{d.ad_soyad}</strong><br/>
+              <span className="text-muted">{d.telefon}</span>
             </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button type="button" onClick={() => { setForm(d); setDuzenleniyorMu(true); window.scrollTo(0,0); }} style={{ backgroundColor: '#ffc107', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>✏️</button>
-              <button type="button" onClick={() => sil(d.id)} style={{ backgroundColor: '#dc3545', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>🗑️</button>
+            <div className="list-item-actions">
+              <button type="button" onClick={() => { setForm(d); setDuzenleniyorMu(true); window.scrollTo(0,0); }} className="btn btn-warning btn-icon">✏️</button>
+              <button type="button" onClick={() => sil(d.id)} className="btn btn-danger btn-icon">🗑️</button>
             </div>
           </li>
         ))}
@@ -134,44 +135,46 @@ function BelgeSayfasi() {
   const yetkiNo = "8100235-001";
 
   return (
-    <div style={{ padding: '15px', width: '100%', maxWidth: '800px', boxSizing: 'border-box', margin: '15px auto', fontFamily: 'serif', lineHeight: '1.6', color: '#333', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-      <div style={{ borderBottom: '2px solid #333', paddingBottom: '10px', marginBottom: '20px', textAlign: 'center' }}>
-        <img src="/logo.png" alt="Asil Emlak Logo" style={{ height: '60px', objectFit: 'contain', marginBottom: '10px' }} onError={(e) => e.target.style.display = 'none'} />
-        <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>TAŞINMAZ YER GÖSTERME SÖZLEŞMESİ</h2>
-      </div>
+    <div className="container container-md">
+      <div className="card" style={{ fontFamily: 'serif', lineHeight: '1.6', color: '#333' }}>
+        <div style={{ borderBottom: '2px solid #333', paddingBottom: '10px', marginBottom: '20px', textAlign: 'center' }}>
+          <img src="/logo.png" alt="Asil Emlak Logo" style={{ height: '60px', objectFit: 'contain', marginBottom: '10px' }} onError={(e) => e.target.style.display = 'none'} />
+          <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>TAŞINMAZ YER GÖSTERME SÖZLEŞMESİ</h2>
+        </div>
 
-      <h3 style={{ fontSize: '18px', borderBottom: '1px solid #ccc' }}>MADDE 1 - TARAFLAR</h3>
-      <p><strong>1.1. Sorumlu Emlak İşletmesi</strong></p>
-      <ul style={{ listStyleType: 'none', paddingLeft: '10px' }}>
-        <li><strong>İşletme Adresi:</strong> [AZMİMİLLİ MAHALLESİ AYDINPINAR CADDESİ NO:19/A MERKEZ DÜZCE]</li>
-        <li><strong>Yetki Belgesi No:</strong> {yetkiNo}</li>
-      </ul>
+        <h3 style={{ fontSize: '18px', borderBottom: '1px solid #ccc' }}>MADDE 1 - TARAFLAR</h3>
+        <p><strong>1.1. Sorumlu Emlak İşletmesi</strong></p>
+        <ul style={{ listStyleType: 'none', paddingLeft: '10px' }}>
+          <li><strong>İşletme Adresi:</strong> [AZMİMİLLİ MAHALLESİ AYDINPINAR CADDESİ NO:19/A MERKEZ DÜZCE]</li>
+          <li><strong>Yetki Belgesi No:</strong> {yetkiNo}</li>
+        </ul>
 
-      <p><strong>1.2. Kiracı Adayı/Alıcı Adayı</strong></p>
-      <p style={{ fontSize: '14px', color: '#666', fontStyle: 'italic' }}>(Sisteme girilen Ad Soyad, TC ve İletişim bilgileri esas alınır.)</p>
+        <p><strong>1.2. Kiracı Adayı/Alıcı Adayı</strong></p>
+        <p className="text-muted" style={{ fontStyle: 'italic' }}>(Sisteme girilen Ad Soyad, TC ve İletişim bilgileri esas alınır.)</p>
 
-      <h3 style={{ fontSize: '18px', borderBottom: '1px solid #ccc', marginTop: '20px' }}>MADDE 2 - SÖZLEŞMENİN KONUSU</h3>
-      <p style={{ textAlign: 'justify' }}>
-        <strong>2.1.</strong> SORUMLU EMLAK DANIŞMANI, üstlendiği taşınmazın kiralanması/satılması sözleşmesinin yapılması imkanını hazırlama görevi çerçevesinde; taşınmazı kiralama/satın alma amacıyla KİRACI ADAYI/ALICI ADAYI’na gösterdiğini, gerekli tanıtımı yaptığını ve bu şekilde edinimi yerine getirdiğini kabul ve taahhüt eder.
-      </p>
-      <p style={{ textAlign: 'justify' }}>
-        <strong>2.2.</strong> KİRACI ADAYI/ALICI ADAYI; her ne suretle olursa olsun taşınmazın; bizatihi kendisi adına, eşi, çocukları, kardeşleri, anne-babası, 3. derece dahil kan ve sıhri hısımlarının adına veya ortağı, paydaşı, temsilcisi, çalışanı olduğu şirket adına kiralandığı/satıldığı taktirde; <strong>satışta satış bedeli üzerinden %2 +KDV, kiralamada 1 (bir) aylık kira bedeli +KDV’sini komisyon olarak</strong> Sorumlu Emlak Danışmanı’na ödeyeceğini kabul ve taahhüt eder.
-      </p>
-
-      <h3 style={{ fontSize: '18px', borderBottom: '1px solid #ccc', marginTop: '20px' }}>MADDE 3 – TARAFLARIN HAK VE YÜKÜMLÜLÜKLERİ</h3>
-      <p style={{ textAlign: 'justify' }}>
-        <strong>3.1.</strong> KİRACI ADAYI veya ALICI ADAYI; SORUMLU EMLAK DANIŞMANI’nı devre dışı bırakılarak işlem gerçekleştirdiği takdirde hem ödemek zorunda olduğu komisyon bedelini ve ayrıca komisyon bedeli kadar ceza-i şart ödemek zorunda olduğunu kabul ve taahhüt eder.
-      </p>
-
-      <h3 style={{ fontSize: '18px', borderBottom: '1px solid #ccc', marginTop: '20px' }}>MADDE 4 - GİZLİLİK ve KİŞİSEL VERİLERİN KORUNMASI</h3>
-      <p style={{ textAlign: 'justify' }}>
-        SORUMLU EMLAK DANIŞMAN’ı ile paylaşılan kişisel veriler, 6698 Sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında işlenmektedir. Kiracı Adayı/Mal Sahibi Adayı kanunda öngörülen tedbirler kapsamında kişisel verilenin işlenmesine açık rızasının bulunduğunu kabul ve beyan eder.
-      </p>
-
-      <div style={{ marginTop: '30px', padding: '15px', backgroundColor: '#f9f9f9', border: '1px solid #ddd', borderRadius: '5px', textAlign: 'center' }}>
-        <p style={{ margin: 0, fontWeight: 'bold', color: '#d9534f', fontSize: '14px' }}>
-          Tarafıma SMS ile iletilen onay kodunu ilgili danışmana ileterek bu belgeyi dijital olarak imzaladığımı kabul ederim.
+        <h3 style={{ fontSize: '18px', borderBottom: '1px solid #ccc', marginTop: '20px' }}>MADDE 2 - SÖZLEŞMENİN KONUSU</h3>
+        <p style={{ textAlign: 'justify' }}>
+          <strong>2.1.</strong> SORUMLU EMLAK DANIŞMANI, üstlendiği taşınmazın kiralanması/satılması sözleşmesinin yapılması imkanını hazırlama görevi çerçevesinde; taşınmazı kiralama/satın alma amacıyla KİRACI ADAYI/ALICI ADAYI’na gösterdiğini, gerekli tanıtımı yaptığını ve bu şekilde edinimi yerine getirdiğini kabul ve taahhüt eder.
         </p>
+        <p style={{ textAlign: 'justify' }}>
+          <strong>2.2.</strong> KİRACI ADAYI/ALICI ADAYI; her ne suretle olursa olsun taşınmazın; bizatihi kendisi adına, eşi, çocukları, kardeşleri, anne-babası, 3. derece dahil kan ve sıhri hısımlarının adına veya ortağı, paydaşı, temsilcisi, çalışanı olduğu şirket adına kiralandığı/satıldığı taktirde; <strong>satışta satış bedeli üzerinden %2 +KDV, kiralamada 1 (bir) aylık kira bedeli +KDV’sini komisyon olarak</strong> Sorumlu Emlak Danışmanı’na ödeyeceğini kabul ve taahhüt eder.
+        </p>
+
+        <h3 style={{ fontSize: '18px', borderBottom: '1px solid #ccc', marginTop: '20px' }}>MADDE 3 – TARAFLARIN HAK VE YÜKÜMLÜLÜKLERİ</h3>
+        <p style={{ textAlign: 'justify' }}>
+          <strong>3.1.</strong> KİRACI ADAYI veya ALICI ADAYI; SORUMLU EMLAK DANIŞMANI’nı devre dışı bırakılarak işlem gerçekleştirdiği takdirde hem ödemek zorunda olduğu komisyon bedelini ve ayrıca komisyon bedeli kadar ceza-i şart ödemek zorunda olduğunu kabul ve taahhüt eder.
+        </p>
+
+        <h3 style={{ fontSize: '18px', borderBottom: '1px solid #ccc', marginTop: '20px' }}>MADDE 4 - GİZLİLİK ve KİŞİSEL VERİLERİN KORUNMASI</h3>
+        <p style={{ textAlign: 'justify' }}>
+          SORUMLU EMLAK DANIŞMAN’ı ile paylaşılan kişisel veriler, 6698 Sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında işlenmektedir. Kiracı Adayı/Mal Sahibi Adayı kanunda öngörülen tedbirler kapsamında kişisel verilenin işlenmesine açık rızasının bulunduğunu kabul ve beyan eder.
+        </p>
+
+        <div style={{ marginTop: '30px', padding: '15px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', textAlign: 'center' }}>
+          <p className="text-brand mb-0" style={{ fontWeight: 'bold', fontSize: '14px' }}>
+            Tarafıma SMS ile iletilen onay kodunu ilgili danışmana ileterek bu belgeyi dijital olarak imzaladığımı kabul ederim.
+          </p>
+        </div>
       </div>
     </div>
   )
@@ -217,9 +220,6 @@ function SahaPaneli() {
       })
       .catch(err => console.error(err));
   }, []);
-
-  const inputStyle = { width: '100%', padding: '12px', marginTop: '5px', marginBottom: '15px', border: '1px solid #ccc', borderRadius: '8px', boxSizing: 'border-box', fontSize: '15px' };
-  const labelStyle = { fontWeight: '600', color: '#444', fontSize: '14px' };
 
   const islemBaslat = async (e) => {
     e.preventDefault();
@@ -301,105 +301,108 @@ function SahaPaneli() {
   };
 
   return (
-    <div style={{ padding: '15px', width: '100%', maxWidth: '500px', boxSizing: 'border-box', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <img src="/logo1.png" alt="Asil Emlak Logo" style={{ height: '70px', objectFit: 'contain' }} onError={(e) => e.target.style.display = 'none'} />
-        <h2 style={{ color: '#d9534f', margin: '10px 0 0 0', fontSize: '24px', fontWeight: '800' }}>Asil Emlak Saha</h2>
-        <button 
-          onClick={() => navigate('/belge')} 
-          style={{ marginTop: '15px', backgroundColor: '#6c757d', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold', boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>
-          📄 Boş Belge Şablonu
-        </button>
+    <div className="container">
+      <div className="header-logo">
+        <img src="/logo.png" alt="Asil Emlak Logo" onError={(e) => e.target.style.display = 'none'} />
+        <h2>Asil Emlak Saha</h2>
+        <button onClick={() => navigate('/belge')} className="btn btn-secondary mt-4">📄 Boş Belge Şablonu</button>
       </div>
       
       {adim === 1 && (
         <>
-          <form onSubmit={islemBaslat} style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ backgroundColor: '#ffffff', padding: '20px', borderRadius: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', border: '1px solid #f0f0f0' }}>
-              <h3 style={{ marginTop: 0, color: '#333', borderBottom: '2px solid #f0f0f0', paddingBottom: '10px', marginBottom: '20px', fontSize: '18px' }}>Yeni Sözleşme Oluştur</h3>
+          <div className="card">
+            <h3 style={{ fontSize: '20px', marginBottom: '20px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>Yeni Sözleşme Oluştur</h3>
+            <form onSubmit={islemBaslat}>
+              <div className="form-group">
+                <label>Danışman:</label>
+                <select value={form.danisman_id} onChange={(e) => setForm({...form, danisman_id: e.target.value})}>
+                  {danismanlar.map(d => <option key={d.id} value={d.id}>{d.ad_soyad}</option>)}
+                </select>
+              </div>
               
-              <label style={labelStyle}>Danışman:</label>
-              <select value={form.danisman_id} onChange={(e) => setForm({...form, danisman_id: e.target.value})} style={inputStyle}>
-                {danismanlar.map(d => <option key={d.id} value={d.id}>{d.ad_soyad}</option>)}
-              </select>
-              
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                <div style={{ flex: '1 1 200px' }}>
-                  <label style={labelStyle}>Müşteri Ad Soyad:</label>
-                  <input type="text" required value={form.musteri_ad_soyad} onChange={(e) => setForm({...form, musteri_ad_soyad: e.target.value})} style={inputStyle} />
+              <div className="form-row">
+                <div className="form-col">
+                  <label>Müşteri Ad Soyad:</label>
+                  <input type="text" required value={form.musteri_ad_soyad} onChange={(e) => setForm({...form, musteri_ad_soyad: e.target.value})} />
                 </div>
-                <div style={{ flex: '1 1 200px' }}>
-                  <label style={labelStyle}>Müşteri TC/Yabancı No:</label>
-                  <input type="text" maxLength="11" required value={form.musteri_tc} onChange={(e) => setForm({...form, musteri_tc: e.target.value})} style={inputStyle} />
+                <div className="form-col">
+                  <label>Müşteri TC/Yabancı No:</label>
+                  <input type="text" maxLength="11" required value={form.musteri_tc} onChange={(e) => setForm({...form, musteri_tc: e.target.value})} />
                 </div>
               </div>
 
-              <label style={labelStyle}>Müşteri Telefon:</label>
-              <input type="tel" required placeholder="5xxxxxxxxx" value={form.musteri_telefon} onChange={(e) => setForm({...form, musteri_telefon: e.target.value})} style={inputStyle} />
+              <div className="form-group">
+                <label>Müşteri Telefon:</label>
+                <input type="tel" required placeholder="5xxxxxxxxx" value={form.musteri_telefon} onChange={(e) => setForm({...form, musteri_telefon: e.target.value})} />
+              </div>
               
-              <hr style={{ border: '0', borderTop: '1px solid #eee', margin: '15px 0' }} />
+              <hr style={{ border: '0', borderTop: '1px solid var(--border)', margin: '24px 0' }} />
 
-              <label style={labelStyle}>Taşınmaz Açık Adresi:</label>
-              <textarea required rows="2" value={form.tasinmaz_adres} onChange={(e) => setForm({...form, tasinmaz_adres: e.target.value})} style={{...inputStyle, resize: 'vertical'}} placeholder="İl, İlçe, Mahalle, Sokak..." />
+              <div className="form-group">
+                <label>Taşınmaz Açık Adresi:</label>
+                <textarea required rows="2" value={form.tasinmaz_adres} onChange={(e) => setForm({...form, tasinmaz_adres: e.target.value})} style={{resize: 'vertical'}} placeholder="İl, İlçe, Mahalle, Sokak..." />
+              </div>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                <div style={{ flex: '1 1 200px' }}>
-                  <label style={labelStyle}>Ada/Parsel:</label>
-                  <input type="text" value={form.tasinmaz_ada_parsel} onChange={(e) => setForm({...form, tasinmaz_ada_parsel: e.target.value})} style={inputStyle} placeholder="Örn: 102/4" />
+              <div className="form-row">
+                <div className="form-col">
+                  <label>Ada/Parsel:</label>
+                  <input type="text" value={form.tasinmaz_ada_parsel} onChange={(e) => setForm({...form, tasinmaz_ada_parsel: e.target.value})} placeholder="Örn: 102/4" />
                 </div>
-                <div style={{ flex: '1 1 200px' }}>
-                  <label style={labelStyle}>İşlem Türü:</label>
-                  <select value={form.islem_turu} onChange={(e) => setForm({...form, islem_turu: e.target.value})} style={inputStyle}>
+                <div className="form-col">
+                  <label>İşlem Türü:</label>
+                  <select value={form.islem_turu} onChange={(e) => setForm({...form, islem_turu: e.target.value})}>
                     <option value="Satış">Satış</option>
                     <option value="Kiralama">Kiralama</option>
                   </select>
                 </div>
               </div>
 
-              <label style={labelStyle}>Bedel ({form.islem_turu === 'Satış' ? 'Satış Bedeli' : 'Aylık Kira'} - TL):</label>
-              <input type="number" required value={form.bedel} onChange={(e) => setForm({...form, bedel: e.target.value})} style={inputStyle} />
+              <div className="form-group">
+                <label>Bedel ({form.islem_turu === 'Satış' ? 'Satış Bedeli' : 'Aylık Kira'} - TL):</label>
+                <input type="number" required value={form.bedel} onChange={(e) => setForm({...form, bedel: e.target.value})} />
+              </div>
               
-              <button type="submit" style={{ width: '100%', padding: '16px', marginTop: '10px', backgroundColor: '#d9534f', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', transition: '0.3s' }}>
+              <button type="submit" className="btn btn-brand btn-block mt-4">
                 Sözleşmeyi Başlat & SMS Gönder
               </button>
-            </div>
-          </form>
+            </form>
+          </div>
 
-          <div style={{ backgroundColor: '#ffffff', padding: '20px', borderRadius: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', border: '1px solid #f0f0f0', marginTop: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #f0f0f0', paddingBottom: '10px', marginBottom: '10px' }}>
-              <h3 style={{ margin: 0, color: '#333', fontSize: '16px' }}>Son Onaylananlar</h3>
-              <button onClick={() => navigate('/admin')} style={{ backgroundColor: '#333', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '5px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>Tümünü Gör</button>
+          <div className="card">
+            <div className="flex-between" style={{ borderBottom: '1px solid var(--border)', paddingBottom: '12px', marginBottom: '16px' }}>
+              <h3 className="mb-0" style={{ fontSize: '16px' }}>Son Onaylananlar</h3>
+              <button onClick={() => navigate('/admin')} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '13px' }}>Tümünü Gör</button>
             </div>
             
             {onayliSozlesmeler.length > 0 ? (
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {onayliSozlesmeler.slice(0, 3).map(k => ( 
-                  <li key={k.id} style={{ padding: '10px 0', borderBottom: '1px solid #eee', fontSize: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ flex: 1, paddingRight: '10px' }}>
+                  <li key={k.id} className="list-item" style={{ boxShadow: 'none', background: 'transparent' }}>
+                    <div className="list-item-content">
                       <strong style={{ color: '#007bff' }}>{k.musteri_ad_soyad}</strong><br/>
-                      <small style={{ color: '#666' }}>{k.tasinmaz_adres}</small>
+                      <span className="text-muted">{k.tasinmaz_adres}</span>
                     </div>
-                    <span style={{ color: '#28a745', fontWeight: 'bold', fontSize: '14px', whiteSpace: 'nowrap' }}>✓ Mühürlü</span>
+                    <span className="badge badge-success">✓ Mühürlü</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p style={{ fontSize: '13px', color: '#999', textAlign: 'center', margin: '15px 0' }}>Henüz onaylanmış sözleşme bulunmuyor.</p>
+              <p className="text-muted text-center mb-0 mt-4">Henüz onaylanmış sözleşme bulunmuyor.</p>
             )}
           </div>
         </>
       )}
 
       {adim === 2 && (
-        <form onSubmit={koduDogrula} style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ backgroundColor: '#ffffff', padding: '20px', borderRadius: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', border: '1px solid #f0f0f0', textAlign: 'center' }}>
-            <h3 style={{ marginTop: 0, color: '#333' }}>Müşteri Onayı Bekleniyor</h3>
-            <p style={{ color: '#666', fontSize: '14px' }}>Müşteriye yasal bilgilendirme ve 6 haneli onay kodu gönderildi.</p>
+        <form onSubmit={koduDogrula}>
+          <div className="card text-center">
+            <h3>Müşteri Onayı Bekleniyor</h3>
+            <p className="text-muted mb-4">Müşteriye yasal bilgilendirme ve 6 haneli onay kodu gönderildi.</p>
             
-            <input type="text" maxLength="6" required placeholder="000000" value={onayKodu} onChange={(e) => setOnayKodu(e.target.value)} style={{ width: '100%', maxWidth: '200px', padding: '15px', fontSize: '28px', textAlign: 'center', letterSpacing: '8px', marginTop: '10px', borderRadius: '8px', border: '2px solid #007bff', outline: 'none' }} />
+            <input type="text" maxLength="6" required placeholder="000000" value={onayKodu} onChange={(e) => setOnayKodu(e.target.value)} className="otp-input" />
             
-            <button type="submit" style={{ width: '100%', padding: '16px', marginTop: '25px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}>Doğrula ve Mühürle</button>
-            <button type="button" onClick={() => setAdim(1)} style={{ width: '100%', padding: '10px', marginTop: '15px', backgroundColor: 'transparent', color: '#999', border: 'none', textDecoration: 'underline', cursor: 'pointer' }}>İptal Et</button>
+            <button type="submit" className="btn btn-success btn-block">Doğrula ve Mühürle</button>
+            <button type="button" onClick={() => setAdim(1)} className="btn btn-outline btn-block mt-4">İptal Et</button>
           </div>
         </form>
       )}
@@ -430,64 +433,34 @@ function AdminPaneli() {
 
   const durumRenkGetir = (durum) => {
     switch(durum) {
-      case 'onaylandi': return { bg: '#d4edda', text: '#155724', etiket: 'Onaylandı' };
-      case 'bekliyor': return { bg: '#fff3cd', text: '#856404', etiket: 'Bekliyor' };
-      case 'suresi_doldu': return { bg: '#f8d7da', text: '#721c24', etiket: 'Süresi Doldu' };
-      default: return { bg: '#e2e3e5', text: '#383d41', etiket: durum };
+      case 'onaylandi': return { sinif: 'badge badge-success', etiket: 'Onaylandı' };
+      case 'bekliyor': return { sinif: 'badge badge-warning', etiket: 'Bekliyor' };
+      case 'suresi_doldu': return { sinif: 'badge badge-danger', etiket: 'Süresi Doldu' };
+      default: return { sinif: 'badge badge-default', etiket: durum };
     }
   };
 
   const pdfIndir = (kayit) => {
-    // 1. İşlem metni ayarı
-    const islemMetni = kayit.islem_turu === 'Satış'
-      ? `satış bedeli üzerinden %2 +KDV'sini`
-      : `1 (bir) aylık kira bedeli +KDV'sini`;
-
-    // 2. Telefon numaralarını güvenli bir şekilde +90 formatına getiren akıllı fonksiyon
-    const telFormatla = (tel) => {
-      if (!tel) return 'Belirtilmedi';
-      // Eğer başında zaten +90 varsa dokunma, yoksa ekle
-      return tel.startsWith('+90') ? tel : `+90 ${tel}`;
-    };
-
+    const islemMetni = kayit.islem_turu === 'Satış' ? `satış bedeli üzerinden %2 +KDV'sini` : `1 (bir) aylık kira bedeli +KDV'sini`;
+    const telFormatla = (tel) => (!tel ? 'Belirtilmedi' : (tel.startsWith('+90') ? tel : `+90${tel}`));
     const musteriTel = telFormatla(kayit.musteri_telefon);
     const danismanTel = telFormatla(kayit.danisman_telefon);
 
-    // 3. HTML İçeriği (Danışman telefonu ve formatlı numaralar eklendi)
     const htmlIcerik = `
       <div style="width: 750px; padding: 20px; font-family: 'Times New Roman', serif; font-size: 14px; line-height: 1.5; color: #000; background: #fff;">
         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
           <h2 style="margin: 0; font-size: 20px;">TAŞINMAZ YER GÖSTERME SÖZLEŞMESİ</h2>
         </div>
-
         <h3 style="font-size: 15px; text-decoration: underline;">MADDE 1 - TARAFLAR</h3>
-        <p><strong>1.1. Sorumlu Emlak İşletmesi</strong><br/>
-        İşletme Adı: Asil Emlak Düzce<br/>
-        İşletme Adresi: [AZMİMİLLİ MAHALLESİ AYDINPINAR CADDESİ NO:19/A MERKEZ DÜZCE]<br/>
-        İşletme Yetki Belgesi Numarası: 8100235-001</p>
-        
-        <p><strong>1.2. Sorumlu Emlak Danışmanı</strong><br/>
-        Adı Soyadı: ${kayit.danisman_ad}<br/>
-        İletişim Bilgisi: ${danismanTel}</p>
-
-        <p><strong>1.3. Kiracı/Alıcı Adayı</strong><br/>
-        Adı Soyadı: ${kayit.musteri_ad_soyad}<br/>
-        TC Kimlik No: ${kayit.musteri_tc}<br/>
-        İletişim Bilgisi: ${musteriTel}</p>
-
+        <p><strong>1.1. Sorumlu Emlak İşletmesi</strong><br/>İşletme Adı: Asil Emlak Düzce<br/>İşletme Adresi: [AZMİMİLLİ MAHALLESİ AYDINPINAR CADDESİ NO:19/A MERKEZ DÜZCE]<br/>İşletme Yetki Belgesi Numarası: 8100235-001</p>
+        <p><strong>1.2. Sorumlu Emlak Danışmanı</strong><br/>Adı Soyadı: ${kayit.danisman_ad}<br/>İletişim Bilgisi: ${danismanTel}</p>
+        <p><strong>1.3. Kiracı/Alıcı Adayı</strong><br/>Adı Soyadı: ${kayit.musteri_ad_soyad}<br/>TC Kimlik No: ${kayit.musteri_tc}<br/>İletişim Bilgisi: ${musteriTel}</p>
         <h3 style="font-size: 15px; text-decoration: underline; margin-top: 15px;">MADDE 2 - SÖZLEŞMENİN KONUSU</h3>
         <p style="text-align: justify;"><strong>2.1.</strong> SORUMLU EMLAK DANIŞMANI, üstlendiği taşınmazın kiralanması/satılması sözleşmesinin yapılması imkanını hazırlama görevi çerçevesinde; taşınmazı kiralama/satın alma amacıyla KİRACI ADAYI/ALICI ADAYI'na gösterdiğini kabul ve taahhüt eder.</p>
-        
         <p style="text-align: justify;"><strong>2.2.</strong> KİRACI ADAYI/ALICI ADAYI; her ne suretle olursa olsun taşınmazın bizatihi kendisi adına, eşi, çocukları, 3. derece dahil kan ve sıhri hısımlarının adına veya ortağı olduğu şirket adına kiralandığı/satıldığı taktirde; <strong>${islemMetni}</strong> komisyon olarak Sorumlu Emlak Danışmanı'na ödeyeceğini kabul ve taahhüt eder.</p>
-
-        <p><strong>2.3. Taşınmaz Bilgileri</strong><br/>
-        Adresi: ${kayit.tasinmaz_adres}<br/>
-        Ada/Parsel: ${kayit.tasinmaz_ada_parsel}<br/>
-        İşlem Türü ve Bedeli: ${kayit.islem_turu} - ${kayit.bedel} TL</p>
-
+        <p><strong>2.3. Taşınmaz Bilgileri</strong><br/>Adresi: ${kayit.tasinmaz_adres}<br/>Ada/Parsel: ${kayit.tasinmaz_ada_parsel}<br/>İşlem Türü ve Bedeli: ${kayit.islem_turu} - ${kayit.bedel} TL</p>
         <h3 style="font-size: 15px; text-decoration: underline; margin-top: 15px;">MADDE 3 - DİJİTAL ONAY VE KVKK</h3>
         <p style="text-align: justify;">Bu sözleşme, müşteri tarafından SMS ile iletilen onay kodunun sisteme girilmesiyle yasal olarak mühürlenmiştir. 6698 Sayılı KVKK kapsamında verilerin işlenmesine açık rıza gösterilmiştir.</p>
-        
         <div style="margin-top: 20px; padding: 15px; border: 2px solid #28a745; border-radius: 10px; text-align: center; background-color: #f8fff9; page-break-inside: avoid;">
           <h4 style="margin: 0 0 5px 0; color: #28a745;">✓ DİJİTAL İMZA MÜHRÜ</h4>
           <p style="margin: 3px 0;"><strong>Onay Zamanı:</strong> ${kayit.onay_zamani && kayit.onay_zamani.Valid ? kayit.onay_zamani.String : '-'}</p>
@@ -511,83 +484,65 @@ function AdminPaneli() {
   };
 
   return (
-    <div style={{ padding: '15px', width: '100%', maxWidth: '1200px', boxSizing: 'border-box', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #d9534f', paddingBottom: '10px', marginBottom: '20px' }}>
+    <div className="container container-lg">
+      <div className="page-title">
         <div>
-          <h2 style={{ color: '#333', margin: 0, fontSize: '22px' }}>Asil Emlak Yönetici Paneli</h2>
-          <button 
-            onClick={() => navigate('/')} 
-            style={{ marginTop: '8px', backgroundColor: 'transparent', color: '#007bff', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline', fontSize: '14px', fontWeight: 'bold' }}>
-            ← Saha Paneline (Ana Sayfa) Dön
+          <h2 className="mb-0">Yönetici Paneli</h2>
+          <button onClick={() => navigate('/')} className="btn-outline" style={{ padding: 0, marginTop: '8px', border: 'none', cursor: 'pointer' }}>
+            ← Saha Paneline Dön
           </button>
         </div>
-        <input 
-          type="text" 
-          placeholder="Müşteri Adı veya TC ile Ara..." 
-          value={arama}
-          onChange={(e) => setArama(e.target.value)}
-          style={{ padding: '10px', width: '100%', maxWidth: '300px', borderRadius: '5px', border: '1px solid #ccc', boxSizing: 'border-box' }}
-        />
+        <input type="text" placeholder="Ad veya TC ile Ara..." value={arama} onChange={(e) => setArama(e.target.value)} style={{ maxWidth: '300px', marginBottom: 0 }} />
       </div>
 
-      <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-        <table style={{ width: '100%', minWidth: '800px', borderCollapse: 'collapse', textAlign: 'left' }}>
+      <div className="table-container">
+        <table>
           <thead>
-            <tr style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #dee2e6' }}>
-              <th style={{ padding: '15px' }}>ID</th>
-              <th style={{ padding: '15px' }}>Danışman</th>
-              <th style={{ padding: '15px' }}>Müşteri & TC</th>
-              <th style={{ padding: '15px' }}>Taşınmaz Adresi & Ada/Parsel</th>
-              <th style={{ padding: '15px' }}>İşlem & Bedel</th>
-              <th style={{ padding: '15px' }}>Durum</th>
-              <th style={{ padding: '15px' }}>İşlem</th>
+            <tr>
+              <th>ID</th>
+              <th>Danışman</th>
+              <th>Müşteri & TC</th>
+              <th>Taşınmaz Adresi & Ada/Parsel</th>
+              <th>İşlem & Bedel</th>
+              <th>Durum</th>
+              <th>Sistem Kaydı</th>
+              <th>İşlem</th>
             </tr>
           </thead>
           <tbody>
             {filtrelenmisKayitlar.map(kayit => {
               const d = durumRenkGetir(kayit.durum);
               return (
-                <tr key={kayit.id} style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '15px' }}>#{kayit.id}</td>
-                  <td style={{ padding: '15px', fontWeight: 'bold' }}>{kayit.danisman_ad}</td>
-                  <td style={{ padding: '15px' }}>
+                <tr key={kayit.id}>
+                  <td>#{kayit.id}</td>
+                  <td><strong>{kayit.danisman_ad}</strong></td>
+                  <td>
                     {kayit.musteri_ad_soyad}<br/>
-                    <small style={{ color: '#666' }}>TC: {kayit.musteri_tc}</small>
+                    <span className="text-muted">TC: {kayit.musteri_tc}</span>
                   </td>
-                  <td style={{ padding: '15px', maxWidth: '250px' }}>
+                  <td>
                     {kayit.tasinmaz_adres}<br/>
-                    <small style={{ color: '#007bff', fontWeight: 'bold' }}>Ada/Parsel: {kayit.tasinmaz_ada_parsel}</small>
+                    <strong style={{ color: '#007bff' }}>{kayit.tasinmaz_ada_parsel}</strong>
                   </td>
-                  <td style={{ padding: '15px' }}>
+                  <td>
                     {kayit.islem_turu}<br/>
-                    <strong style={{ color: '#d9534f' }}>{kayit.bedel} TL</strong>
+                    <strong className="text-brand">{kayit.bedel} TL</strong>
                   </td>
-                  <td style={{ padding: '15px' }}>
-                    <span style={{ backgroundColor: d.bg, color: d.text, padding: '5px 10px', borderRadius: '20px', fontSize: '13px', fontWeight: 'bold' }}>
-                      {d.etiket}
-                    </span>
-                  </td>
-                  <td style={{ padding: '15px', fontSize: '13px', color: '#555' }}>
+                  <td><span className={d.sinif}>{d.etiket}</span></td>
+                  <td className="text-muted" style={{ fontSize: '13px' }}>
                     {kayit.onay_zamani && kayit.onay_zamani.Valid ? kayit.onay_zamani.String : '-'} <br/>
                     {kayit.musteri_ip && kayit.musteri_ip.Valid ? `IP: ${kayit.musteri_ip.String}` : ''}
                   </td>
-                  <td style={{ padding: '15px' }}>
+                  <td>
                     {kayit.durum === 'onaylandi' && (
-                      <button 
-                        onClick={() => pdfIndir(kayit)}
-                        style={{ backgroundColor: '#007bff', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px' }}
-                      >
-                        PDF İndir
-                      </button>
+                      <button onClick={() => pdfIndir(kayit)} className="btn btn-brand" style={{ padding: '8px 16px', fontSize: '13px' }}>PDF İndir</button>
                     )}
                   </td>
                 </tr>
               )
             })}
             {filtrelenmisKayitlar.length === 0 && (
-              <tr>
-                <td colSpan="8" style={{ padding: '20px', textAlign: 'center', color: '#666' }}>Kayıt bulunamadı.</td>
-              </tr>
+              <tr><td colSpan="8" className="text-center text-muted" style={{ padding: '32px' }}>Kayıt bulunamadı.</td></tr>
             )}
           </tbody>
         </table>
@@ -599,19 +554,7 @@ function AdminPaneli() {
 function App() {
   return (
     <>
-      {/* SİHİRLİ MOBİL DOKUNUŞ: Gövdenin yatayda ekranı aşmasını kesinlikle yasaklar! */}
-      <style>{`
-        * { box-sizing: border-box; }
-        body, html { 
-          overflow-x: hidden; 
-          width: 100%; 
-          margin: 0; 
-          padding: 0; 
-        }
-      `}</style>
-
       <YanMenu />
-
       <Routes>
         <Route path="/" element={<SahaPaneli />} />
         <Route path="/belge" element={<BelgeSayfasi />} />
