@@ -438,30 +438,34 @@ function AdminPaneli() {
   };
 
   const pdfIndir = (kayit) => {
+    // 1. Dinamik metinleri ayarlıyoruz
     const islemMetni = kayit.islem_turu === 'Satış'
       ? `satış bedeli üzerinden %2 +KDV'sini`
       : `1 (bir) aylık kira bedeli +KDV'sini`;
 
+    // 2. HTML içeriğine sabit genişlik (width: 750px) verdik.
+    // Bu sayede iPhone ekranı dar olsa bile yazılar alt satıra geçip belgeyi uzatmayacak!
     const htmlIcerik = `
-      <div style="padding: 40px; font-family: 'Times New Roman', serif; font-size: 14px; line-height: 1.6; color: #000;">
-        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
-          <h2 style="margin: 0; font-size: 22px;">TAŞINMAZ YER GÖSTERME SÖZLEŞMESİ</h2>
+      <div style="width: 750px; padding: 20px; font-family: 'Times New Roman', serif; font-size: 14px; line-height: 1.5; color: #000; background: #fff;">
+        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
+          <h2 style="margin: 0; font-size: 20px;">TAŞINMAZ YER GÖSTERME SÖZLEŞMESİ</h2>
         </div>
 
-        <h3 style="font-size: 16px; text-decoration: underline;">MADDE 1 - TARAFLAR</h3>
+        <h3 style="font-size: 15px; text-decoration: underline;">MADDE 1 - TARAFLAR</h3>
         <p><strong>1.1. Sorumlu Emlak İşletmesi</strong><br/>
         İşletme Adı: Asil Emlak Düzce<br/>
         İşletme Adresi: [AZMİMİLLİ MAHALLESİ AYDINPINAR CADDESİ NO:19/A MERKEZ DÜZCE]<br/>
         İşletme Yetki Belgesi Numarası: 8100235-001</p>
         <p><strong>1.2. Sorumlu Emlak Danışmanı</strong><br/>
-        Adı Soyadı: ${kayit.danisman_ad}<br/>
+        Adı Soyadı: ${kayit.danisman_ad}</p>
+        İletişim Bilgisi: ${kayit.danisman_telefon}</p>
 
-        <p><strong>1.2. Kiracı/Alıcı Adayı</strong><br/>
+        <p><strong>1.3. Kiracı/Alıcı Adayı</strong><br/>
         Adı Soyadı: ${kayit.musteri_ad_soyad}<br/>
         TC Kimlik No: ${kayit.musteri_tc}<br/>
         İletişim Bilgisi: ${kayit.musteri_telefon}</p>
 
-        <h3 style="font-size: 16px; text-decoration: underline; margin-top: 20px;">MADDE 2 - SÖZLEŞMENİN KONUSU</h3>
+        <h3 style="font-size: 15px; text-decoration: underline; margin-top: 15px;">MADDE 2 - SÖZLEŞMENİN KONUSU</h3>
         <p style="text-align: justify;"><strong>2.1.</strong> SORUMLU EMLAK DANIŞMANI, üstlendiği taşınmazın kiralanması/satılması sözleşmesinin yapılması imkanını hazırlama görevi çerçevesinde; taşınmazı kiralama/satın alma amacıyla KİRACI ADAYI/ALICI ADAYI'na gösterdiğini kabul ve taahhüt eder.</p>
         
         <p style="text-align: justify;"><strong>2.2.</strong> KİRACI ADAYI/ALICI ADAYI; her ne suretle olursa olsun taşınmazın bizatihi kendisi adına, eşi, çocukları, 3. derece dahil kan ve sıhri hısımlarının adına veya ortağı olduğu şirket adına kiralandığı/satıldığı taktirde; <strong>${islemMetni}</strong> komisyon olarak Sorumlu Emlak Danışmanı'na ödeyeceğini kabul ve taahhüt eder.</p>
@@ -471,26 +475,33 @@ function AdminPaneli() {
         Ada/Parsel: ${kayit.tasinmaz_ada_parsel}<br/>
         İşlem Türü ve Bedeli: ${kayit.islem_turu} - ${kayit.bedel} TL</p>
 
-        <h3 style="font-size: 16px; text-decoration: underline; margin-top: 20px;">MADDE 3 - DİJİTAL ONAY VE KVKK</h3>
+        <h3 style="font-size: 15px; text-decoration: underline; margin-top: 15px;">MADDE 3 - DİJİTAL ONAY VE KVKK</h3>
         <p style="text-align: justify;">Bu sözleşme, müşteri tarafından SMS ile iletilen onay kodunun sisteme girilmesiyle yasal olarak mühürlenmiştir. 6698 Sayılı KVKK kapsamında verilerin işlenmesine açık rıza gösterilmiştir.</p>
         
-        <div style="margin-top: 40px; padding: 15px; border: 2px solid #28a745; border-radius: 10px; text-align: center; background-color: #f8fff9;">
-          <h4 style="margin: 0 0 10px 0; color: #28a745;">✓ DİJİTAL İMZA MÜHRÜ</h4>
-          <p style="margin: 5px 0;"><strong>Onay Zamanı:</strong> ${kayit.onay_zamani && kayit.onay_zamani.Valid ? kayit.onay_zamani.String : '-'}</p>
-          <p style="margin: 5px 0;"><strong>Cihaz GPS Koordinatı:</strong> ${kayit.konum && kayit.konum.Valid ? kayit.konum.String : 'Alınamadı'}</p>
-          <p style="margin: 5px 0;"><strong>GSM OTP Doğrulaması:</strong> ${kayit.musteri_telefon} numaralı telefona iletilen eşsiz şifre sisteme girilerek kimlik teyidi sağlanmıştır.</p>
-          <p style="margin: 10px 0 0 0; font-size: 12px; color: #555;">Bu belge Asil Emlak Saha Otomasyonu tarafından oluşturulmuştur.</p>
+        <div style="margin-top: 20px; padding: 15px; border: 2px solid #28a745; border-radius: 10px; text-align: center; background-color: #f8fff9; page-break-inside: avoid;">
+          <h4 style="margin: 0 0 5px 0; color: #28a745;">✓ DİJİTAL İMZA MÜHRÜ</h4>
+          <p style="margin: 3px 0;"><strong>Onay Zamanı:</strong> ${kayit.onay_zamani && kayit.onay_zamani.Valid ? kayit.onay_zamani.String : '-'}</p>
+          <p style="margin: 3px 0;"><strong>Cihaz GPS Koordinatı:</strong> ${kayit.konum && kayit.konum.Valid ? kayit.konum.String : 'Alınamadı'}</p>
+          <p style="margin: 3px 0;"><strong>GSM OTP Doğrulaması:</strong> ${kayit.musteri_telefon} numaralı telefona iletilen eşsiz şifre sisteme girilerek kimlik teyidi sağlanmıştır.</p>
+          <p style="margin: 10px 0 0 0; font-size: 11px; color: #555;">Bu belge Asil Emlak Saha Otomasyonu tarafından oluşturulmuştur.</p>
         </div>
       </div>
     `;
 
-    html2pdf().from(htmlIcerik).set({
-      margin: 10,
+    // 3. Kenar boşluklarını (margin) küçülttük ve windowWidth atadık.
+    const ayarlar = {
+      margin: [5, 5, 5, 5], 
       filename: `YerGosterme_${kayit.musteri_ad_soyad.replace(/ /g, '_')}_${kayit.id}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).save();
+      html2canvas: { 
+        scale: 2, 
+        windowWidth: 800 // SİHİRLİ DOKUNUŞ: Tarayıcı genişliğini her cihazda 800px farz eder!
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: 'avoid-all' } // Yanlışlıkla sayfa bölünmesini engeller
+    };
+
+    html2pdf().from(htmlIcerik).set(ayarlar).save();
   };
 
   return (
