@@ -283,6 +283,7 @@ func yerGostermeDogrulaHandler(w http.ResponseWriter, r *http.Request) {
 type Danisman struct {
 	ID      int    `json:"id"`
 	AdSoyad string `json:"ad_soyad"`
+	Telefon string `json:"telefon"`
 }
 
 type Portfoy struct {
@@ -292,10 +293,12 @@ type Portfoy struct {
 }
 
 // API Endpoint: /api/danismanlar
+// API Endpoint: /api/danismanlar
 func getDanismanlarHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	rows, err := db.Query("SELECT id, ad_soyad FROM danismanlar WHERE aktif_mi = TRUE")
+	// SELECT sorgusuna 'telefon' eklendi (aktif_mi kuralını koruyarak veya direkt tümünü çekerek)
+	rows, err := db.Query("SELECT id, ad_soyad, telefon FROM danismanlar WHERE aktif_mi = true")
 	if err != nil {
 		http.Error(w, "Veritabanı hatası", http.StatusInternalServerError)
 		return
@@ -305,7 +308,8 @@ func getDanismanlarHandler(w http.ResponseWriter, r *http.Request) {
 	var danismanlar []Danisman
 	for rows.Next() {
 		var d Danisman
-		rows.Scan(&d.ID, &d.AdSoyad)
+		// rows.Scan içine &d.Telefon eklendi
+		rows.Scan(&d.ID, &d.AdSoyad, &d.Telefon)
 		danismanlar = append(danismanlar, d)
 	}
 
