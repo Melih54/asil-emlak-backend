@@ -103,7 +103,8 @@ function DanismanYonetimi() {
           
           <div className="form-group">
             <label>Telefon (Sisteme kayıtlı numara):</label>
-            <input type="text" required value={form.telefon} onChange={e => setForm({...form, telefon: e.target.value})} placeholder="Örn: 5551234567" />
+            {/* ŞIK PLACEHOLDER DÜZELTMESİ EKLENDİ */}
+            <input type="text" required value={form.telefon} onChange={e => setForm({...form, telefon: e.target.value})} placeholder="Örn: 555 123 45 67" />
           </div>
           
           <button type="submit" className={`btn btn-block ${duzenleniyorMu ? 'btn-success' : 'btn-brand'}`}>
@@ -277,7 +278,8 @@ function SahaPaneli() {
 
               <div className="form-group">
                 <label>Müşteri Telefon</label>
-                <input type="tel" required placeholder="5xxxxxxxxx" value={form.musteri_telefon} onChange={(e) => setForm({...form, musteri_telefon: e.target.value})} />
+                {/* ŞIK PLACEHOLDER DÜZELTMESİ EKLENDİ */}
+                <input type="tel" required placeholder="Örn: 555 123 45 67" value={form.musteri_telefon} onChange={(e) => setForm({...form, musteri_telefon: e.target.value})} />
               </div>
               
               <hr style={{ border: '0', borderTop: '1px solid var(--glass-border)', margin: '30px 0' }} />
@@ -348,14 +350,14 @@ function SahaPaneli() {
             
             <input type="text" maxLength="6" required placeholder="000000" value={onayKodu} onChange={(e) => setOnayKodu(e.target.value)} className="otp-input" />
             
-            <button type="submit" className="btn btn-success btn-block mt-4" style={{ padding: '18px', fontSize: '1.1rem' }}>
+            <button type="submit" className="btn btn-success btn-block mt-4" style={{ padding: '16px', fontSize: '1rem' }}>
               SÖZLEŞMEYİ MÜHÜRLE
             </button>
 
-            {/* İŞTE EKSİK OLAN WHATSAPP BUTONU BURADA! */}
-            <a href={`https://wa.me/${wpFormatli}?text=${wpMesaj}`} target="_blank" rel="noreferrer" className="btn btn-block mt-3" style={{ background: '#25D366', color: '#fff', padding: '16px', fontSize: '1rem', textDecoration: 'none' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-              WhatsApp'tan Hatırlat
+            {/* WHATSAPP BUTONU DİZAYNI DÜZELTİLDİ: Flex ve Ortalama eklendi */}
+            <a href={`https://wa.me/${wpFormatli}?text=${wpMesaj}`} target="_blank" rel="noreferrer" className="btn btn-block mt-3" style={{ background: '#25D366', color: '#ffffff', padding: '16px', fontSize: '1rem', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: '0 6px 15px rgba(37, 211, 102, 0.3)', border: 'none', borderRadius: '12px' }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+              WhatsApp ile Gönder
             </a>
 
             <button type="button" onClick={() => setAdim(1)} className="btn btn-secondary btn-block mt-3" style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}>İptal Et</button>
@@ -501,22 +503,20 @@ function AdminPaneli() {
                   </td>
                   <td><span className={d.sinif}>{d.etiket}</span></td>
                   
-                  {/* İŞTE EKSİK OLAN HARİTA (GPS) LİNKİ BURADA! */}
                   <td style={{ color: 'var(--text-muted)', fontSize: '13px' }}>
                     {kayit.onay_zamani && kayit.onay_zamani.Valid ? kayit.onay_zamani.String : '-'} <br/>
                     {kayit.musteri_ip && kayit.musteri_ip.Valid ? `IP: ${kayit.musteri_ip.String}` : ''}
                     
                     {konumGecerliMi && (
-                      <a href={`http://maps.google.com/?q=${kayit.konum.String.replace(/\s/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#10b981', textDecoration: 'none', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px' }}>
+                      <a href={`http://maps.google.com/?q=$${kayit.konum.String.replace(/\s/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#10b981', textDecoration: 'none', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px' }}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                         Haritada Gör
                       </a>
                     )}
                   </td>
                   
-                  {/* İŞTE EKSİK OLAN WHATSAPP VE PDF BUTONLARI BURADA! */}
                   <td style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <a href={`https://wa.me/${adminWpFormatla(kayit.musteri_telefon)}?text=${encodeURIComponent(`Merhaba ${kayit.musteri_ad_soyad}, Asil Emlak yer gösterme belgenize bu linkten ulaşabilirsiniz: https://asil-emlak-backend.vercel.app/belge`)}`} target="_blank" rel="noreferrer" className="btn" style={{ padding: '6px 10px', fontSize: '12px', background: '#25D366', color: '#fff', textDecoration: 'none' }}>
+                    <a href={`https://wa.me/${adminWpFormatla(kayit.musteri_telefon)}?text=${encodeURIComponent(`Merhaba ${kayit.musteri_ad_soyad}, Asil Emlak yer gösterme belgenize bu linkten ulaşabilirsiniz: https://asil-emlak-backend.vercel.app/belge`)}`} target="_blank" rel="noreferrer" className="btn" style={{ padding: '6px 10px', fontSize: '12px', background: '#25D366', color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                       WhatsApp
                     </a>
