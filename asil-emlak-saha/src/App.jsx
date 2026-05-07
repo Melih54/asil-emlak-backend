@@ -146,7 +146,7 @@ function BelgeSayfasi() {
     <div className="container container-md">
       <div className="card" style={{ fontFamily: 'serif', lineHeight: '1.6', color: '#333', padding: '40px', background: '#fff' }}>
         <div style={{ borderBottom: '2px solid #333', paddingBottom: '10px', marginBottom: '20px', textAlign: 'center' }}>
-          <img src="/logo.png" alt="Asil Emlak Logo" style={{ height: '60px', objectFit: 'contain', marginBottom: '10px' }} onError={(e) => e.target.style.display = 'none'} />
+          <img src="/logo1.png" alt="Asil Emlak Logo" style={{ height: '60px', objectFit: 'contain', marginBottom: '10px' }} onError={(e) => e.target.style.display = 'none'} />
           <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>TAŞINMAZ YER GÖSTERME SÖZLEŞMESİ</h2>
         </div>
 
@@ -352,7 +352,7 @@ function SahaPaneli() {
               SÖZLEŞMEYİ MÜHÜRLE
             </button>
 
-            {/* YENİ: WHATSAPP İLE HATIRLATMA BUTONU */}
+            {/* İŞTE EKSİK OLAN WHATSAPP BUTONU BURADA! */}
             <a href={`https://wa.me/${wpFormatli}?text=${wpMesaj}`} target="_blank" rel="noreferrer" className="btn btn-block mt-3" style={{ background: '#25D366', color: '#fff', padding: '16px', fontSize: '1rem', textDecoration: 'none' }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
               WhatsApp'tan Hatırlat
@@ -481,7 +481,6 @@ function AdminPaneli() {
             {gosterilecekKayitlar.map(kayit => {
               const d = durumRenkGetir(kayit.durum);
               
-              // Konum var mı ve geçerli bir koordinat mı diye kontrol ediyoruz
               const konumGecerliMi = kayit.konum && kayit.konum.Valid && kayit.konum.String.includes(',');
 
               return (
@@ -502,20 +501,20 @@ function AdminPaneli() {
                   </td>
                   <td><span className={d.sinif}>{d.etiket}</span></td>
                   
-                  {/* YENİ: GPS HARİTA LİNKİ BURAYA EKLENDİ */}
+                  {/* İŞTE EKSİK OLAN HARİTA (GPS) LİNKİ BURADA! */}
                   <td style={{ color: 'var(--text-muted)', fontSize: '13px' }}>
                     {kayit.onay_zamani && kayit.onay_zamani.Valid ? kayit.onay_zamani.String : '-'} <br/>
                     {kayit.musteri_ip && kayit.musteri_ip.Valid ? `IP: ${kayit.musteri_ip.String}` : ''}
                     
                     {konumGecerliMi && (
-                      <a href={`https://maps.google.com/?q=${kayit.konum.String.replace(/\s/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#10b981', textDecoration: 'none', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px' }}>
+                      <a href={`http://maps.google.com/?q=${kayit.konum.String.replace(/\s/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#10b981', textDecoration: 'none', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px' }}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                         Haritada Gör
                       </a>
                     )}
                   </td>
                   
-                  {/* YENİ: WHATSAPP VE PDF BUTONLARI */}
+                  {/* İŞTE EKSİK OLAN WHATSAPP VE PDF BUTONLARI BURADA! */}
                   <td style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <a href={`https://wa.me/${adminWpFormatla(kayit.musteri_telefon)}?text=${encodeURIComponent(`Merhaba ${kayit.musteri_ad_soyad}, Asil Emlak yer gösterme belgenize bu linkten ulaşabilirsiniz: https://asil-emlak-backend.vercel.app/belge`)}`} target="_blank" rel="noreferrer" className="btn" style={{ padding: '6px 10px', fontSize: '12px', background: '#25D366', color: '#fff', textDecoration: 'none' }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
