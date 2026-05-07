@@ -12,9 +12,9 @@ import (
 	"strings" // YENİ EKLENDİ
 	"time"
 
-	"github.com/joho/godotenv"
-
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Global veritabanı değişkenimiz
@@ -145,7 +145,6 @@ type DogrulaResponse struct {
 
 // API Endpoint: /api/baslat
 func yerGostermeBaslatHandler(w http.ResponseWriter, r *http.Request) {
-	// Ön kontrol (Preflight) isteğine yanıt ver
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
 		return
@@ -157,46 +156,48 @@ func yerGostermeBaslatHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 1. Danışman Adını Veritabanından Çek
 	var danismanAd string
 	err := db.QueryRow("SELECT ad_soyad FROM danismanlar WHERE id = ?", req.DanismanID).Scan(&danismanAd)
 	if err != nil {
 		danismanAd = "Asil Emlak Danismani"
 	}
 
-	// 2. İşlem: Rastgele 6 haneli kod üret
+	// 1. Düz Metin Şifreyi Üret (Müşteriye SMS gidecek olan bu)
 	onayKodu := generateOTP()
 
-	// 3. İşlem: Şu anki zamana 15 dakika ekle
+	// 2. Şifreyi Bcrypt ile Hash'le (Veritabanına yazılacak olan bu)
+	hashedKodBytes, err := bcrypt.GenerateFromPassword([]byte(onayKodu), bcrypt.DefaultCost)
+	if err != nil {
+		json.NewEncoder(w).Encode(BaslatResponse{Basarili: false, Mesaj: "Şifreleme hatası"})
+		return
+	}
+	hashedKod := string(hashedKodBytes)
+
 	suAn := time.Now()
 	sonGecerlilik := suAn.Add(15 * time.Minute)
 
-	// 4. İşlem: Veritabanına YENİ ALANLARLA kaydet
+	// 3. Veritabanına onayKodu'nu değil, hashedKod'u kaydet!
 	query := `INSERT INTO yer_gosterme_kayitlari 
 		(danisman_id, musteri_ad_soyad, musteri_telefon, musteri_tc, tasinmaz_adres, tasinmaz_ada_parsel, islem_turu, bedel, onay_kodu, durum, olusturulma_tarihi, son_gecerlilik_tarihi) 
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'bekliyor', ?, ?)`
 
-	sonuc, err := db.Exec(query, req.DanismanID, req.MusteriAdSoyad, req.MusteriTelefon, req.MusteriTC, req.TasinmazAdres, req.TasinmazAdaParsel, req.IslemTuru, req.Bedel, onayKodu, suAn, sonGecerlilik)
+	sonuc, err := db.Exec(query, req.DanismanID, req.MusteriAdSoyad, req.MusteriTelefon, req.MusteriTC, req.TasinmazAdres, req.TasinmazAdaParsel, req.IslemTuru, req.Bedel, hashedKod, suAn, sonGecerlilik)
 
 	if err != nil {
 		log.Printf("Kayıt hatası: %v", err)
-		json.NewEncoder(w).Encode(BaslatResponse{Basarili: false, Mesaj: "Veritabanı kayıt hatası: " + err.Error()})
+		json.NewEncoder(w).Encode(BaslatResponse{Basarili: false, Mesaj: "Veritabanı kayıt hatası"})
 		return
 	}
 
 	yeniID, _ := sonuc.LastInsertId()
 
-	// 5. Zengin SMS Metnini Oluştur
+	// 4. SMS ile DÜZ METİN (onayKodu) gönderiyoruz, Hashli olanı değil!
 	tamMesaj := fmt.Sprintf("ASIL EMLAK: %s Yetki No: 8100235-001. %s adresindeki (%s) tasinmazin yer gosterimi %s icin yapilmistir. Sozlesme: https://asil-emlak-backend.vercel.app/belge Onay Kodu: %s",
 		danismanAd, req.TasinmazAdres, req.IslemTuru, req.MusteriAdSoyad, onayKodu)
 
-	// SMS'i Gönder
 	formatliTelefon := "+90" + req.MusteriTelefon
 	go smsGonder(formatliTelefon, tamMesaj)
 
-	fmt.Printf("Yeni Kayıt ID: %d - Kod: %s\n", yeniID, onayKodu)
-
-	// 6. EKSİK OLAN KISIM: React'e Başarılı Yanıtını Döndür
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(BaslatResponse{
 		Basarili: true,
@@ -240,14 +241,16 @@ func yerGostermeDogrulaHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 2. Süre Kontrolü: 15 dakika dolmuş mu?
 	if time.Now().After(dbSonGecerlilik) {
-		// Süre dolduysa veritabanındaki durumu güncelle
 		db.Exec("UPDATE yer_gosterme_kayitlari SET durum = 'suresi_doldu' WHERE id = ?", req.KayitID)
 		json.NewEncoder(w).Encode(DogrulaResponse{Basarili: false, Mesaj: "Bu kodun süresi dolmuş. Lütfen yeni bir kod isteyiniz."})
 		return
 	}
 
-	// 3. Kod Kontrolü: Müşterinin söylediği kod doğru mu?
-	if req.OnayKodu != dbOnayKodu {
+	// 3. Kod Kontrolü: YENİ GÜVENLİK KONTROLÜ (Bcrypt Karşılaştırması)
+	// dbOnayKodu veritabanındaki Hashli şifre, req.OnayKodu müşterinin yazdığı 123456
+	err = bcrypt.CompareHashAndPassword([]byte(dbOnayKodu), []byte(req.OnayKodu))
+	if err != nil {
+		// Eşleşmezse bu blok çalışır
 		json.NewEncoder(w).Encode(DogrulaResponse{Basarili: false, Mesaj: "Girdiğiniz onay kodu hatalı."})
 		return
 	}
