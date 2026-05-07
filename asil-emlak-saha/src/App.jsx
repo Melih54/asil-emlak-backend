@@ -5,7 +5,7 @@ import './App.css'
 import html2pdf from 'html2pdf.js';
 
 // --- YAN MENÜ (SIDEBAR) BİLEŞENİ ---
-function YanMenu() {
+function YanMenu({ darkMode, toggleDarkMode }) {
   const [acik, setAcik] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,6 +36,12 @@ function YanMenu() {
           <button onClick={() => menuGecis('/belge')} className={aktifMi('/belge')}>📄 Boş Belge Şablonu</button>
           <button onClick={() => menuGecis('/danismanlar')} className={aktifMi('/danismanlar')}>👥 Danışman Yönetimi</button>
           <button onClick={() => menuGecis('/admin')} className={aktifMi('/admin')}>⚙️ Yönetici Paneli</button>
+        </div>
+
+        <div style={{ padding: '20px', borderTop: '1px solid var(--glass-border)' }}>
+          <button onClick={toggleDarkMode} className="btn btn-secondary btn-block" style={{ display: 'flex', justifyContent: 'center' }}>
+            {darkMode ? '☀️ Açık Tema' : '🌙 Karanlık Tema'}
+          </button>
         </div>
       </div>
     </>
@@ -116,8 +122,8 @@ function DanismanYonetimi() {
         {danismanlar.map((d, index) => (
           <li key={d.id} className="list-item" style={{ animation: `slideUp 0.5s ease forwards`, animationDelay: `${index * 0.1 + 0.2}s`, opacity: 0 }}>
             <div>
-              <strong style={{ fontSize: '16px' }}>{d.ad_soyad}</strong><br/>
-              <span style={{ color: '#64748b', fontSize: '14px', fontWeight: 500 }}>{d.telefon}</span>
+              <strong style={{ fontSize: '16px', color: 'var(--text-main)' }}>{d.ad_soyad}</strong><br/>
+              <span style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: 500 }}>{d.telefon}</span>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button type="button" onClick={() => { setForm(d); setDuzenleniyorMu(true); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="btn btn-secondary" style={{ padding: '8px 12px' }}>✏️</button>
@@ -138,7 +144,8 @@ function BelgeSayfasi() {
 
   return (
     <div className="container container-md">
-      <div className="card" style={{ fontFamily: 'serif', lineHeight: '1.6', color: '#333', padding: '40px' }}>
+      <div className="card" style={{ fontFamily: 'serif', lineHeight: '1.6', color: '#333', padding: '40px', background: '#fff' }}>
+        {/* PDF Çıktısı alırken formun bozulmaması için belge içerisindeki arkaplanı özellikle beyaz (#fff) ve metni koyu (#333) bıraktık */}
         <div style={{ borderBottom: '2px solid #333', paddingBottom: '10px', marginBottom: '20px', textAlign: 'center' }}>
           <img src="/logo.png" alt="Asil Emlak Logo" style={{ height: '60px', objectFit: 'contain', marginBottom: '10px' }} onError={(e) => e.target.style.display = 'none'} />
           <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>TAŞINMAZ YER GÖSTERME SÖZLEŞMESİ</h2>
@@ -269,7 +276,7 @@ function SahaPaneli() {
                 <input type="tel" required placeholder="5xxxxxxxxx" value={form.musteri_telefon} onChange={(e) => setForm({...form, musteri_telefon: e.target.value})} />
               </div>
               
-              <hr style={{ border: '0', borderTop: '1px solid rgba(0,0,0,0.1)', margin: '30px 0' }} />
+              <hr style={{ border: '0', borderTop: '1px solid var(--glass-border)', margin: '30px 0' }} />
 
               <div className="form-group">
                 <label>Taşınmaz Açık Adresi</label>
@@ -312,15 +319,15 @@ function SahaPaneli() {
                 {onayliSozlesmeler.slice(0, 3).map(k => ( 
                   <li key={k.id} className="list-item" style={{ padding: '15px' }}>
                     <div>
-                      <strong style={{ color: '#0f172a' }}>{k.musteri_ad_soyad}</strong><br/>
-                      <span style={{ color: '#64748b', fontSize: '13px' }}>{k.tasinmaz_adres}</span>
+                      <strong style={{ color: 'var(--text-main)' }}>{k.musteri_ad_soyad}</strong><br/>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>{k.tasinmaz_adres}</span>
                     </div>
                     <span className="badge badge-success">✓ Mühürlü</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p style={{ textAlign: 'center', color: '#64748b', margin: '20px 0 0 0' }}>Henüz onaylanmış sözleşme bulunmuyor.</p>
+              <p style={{ textAlign: 'center', color: 'var(--text-muted)', margin: '20px 0 0 0' }}>Henüz onaylanmış sözleşme bulunmuyor.</p>
             )}
           </div>
         </>
@@ -333,7 +340,7 @@ function SahaPaneli() {
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             </div>
             <h3 style={{ fontSize: '24px', marginBottom: '10px' }}>Onay Bekleniyor</h3>
-            <p style={{ color: '#64748b', marginBottom: '30px' }}>Müşteriye yasal bilgilendirme ve 6 haneli onay kodu gönderildi.</p>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '30px' }}>Müşteriye yasal bilgilendirme ve 6 haneli onay kodu gönderildi.</p>
             
             <input type="text" maxLength="6" required placeholder="000000" value={onayKodu} onChange={(e) => setOnayKodu(e.target.value)} className="otp-input" />
             
@@ -347,11 +354,16 @@ function SahaPaneli() {
 }
 
 // --------------------------------------------------------
-// 3. SAYFA: YÖNETİCİ (ADMIN) PANELİ
+// 3. SAYFA: YÖNETİCİ (ADMIN) PANELİ (SAYFALAMALI)
 // --------------------------------------------------------
 function AdminPaneli() {
   const [kayitlar, setKayitlar] = useState([]);
   const [arama, setArama] = useState('');
+  
+  // SAYFALAMA STATE'LERİ
+  const [mevcutSayfa, setMevcutSayfa] = useState(1);
+  const kayitBasinaSayfa = 10;
+  
   const navigate = useNavigate(); 
 
   useEffect(() => {
@@ -361,11 +373,22 @@ function AdminPaneli() {
       .catch(err => console.error("Kayıtlar çekilemedi", err));
   }, []);
 
+  // Arama yapıldığında kullanıcıyı otomatik 1. sayfaya atar
+  useEffect(() => {
+    setMevcutSayfa(1);
+  }, [arama]);
+
   const filtrelenmisKayitlar = kayitlar.filter(k => {
     const adSoyad = k.musteri_ad_soyad || '';
     const tcNo = k.musteri_tc || '';
     return adSoyad.toLowerCase().includes(arama.toLowerCase()) || tcNo.includes(arama);
   });
+
+  // SAYFALAMA MATEMATİĞİ
+  const sonKayitIndeksi = mevcutSayfa * kayitBasinaSayfa;
+  const ilkKayitIndeksi = sonKayitIndeksi - kayitBasinaSayfa;
+  const gosterilecekKayitlar = filtrelenmisKayitlar.slice(ilkKayitIndeksi, sonKayitIndeksi);
+  const toplamSayfa = Math.ceil(filtrelenmisKayitlar.length / kayitBasinaSayfa);
 
   const durumRenkGetir = (durum) => {
     switch(durum) {
@@ -415,9 +438,9 @@ function AdminPaneli() {
       <div className="page-title" style={{ marginBottom: '30px' }}>
         <div>
           <h2 style={{ margin: 0, fontSize: '28px' }}>Yönetici Paneli</h2>
-          <button onClick={() => navigate('/')} style={{ padding: 0, marginTop: '8px', border: 'none', background: 'transparent', color: '#64748b', cursor: 'pointer', fontWeight: 600 }}>← Saha Paneline Dön</button>
+          <button onClick={() => navigate('/')} style={{ padding: 0, marginTop: '8px', border: 'none', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 600 }}>← Saha Paneline Dön</button>
         </div>
-        <input type="text" placeholder="Ad veya TC ile Ara..." value={arama} onChange={(e) => setArama(e.target.value)} style={{ maxWidth: '300px', marginBottom: 0, background: 'rgba(255,255,255,0.8)' }} />
+        <input type="text" placeholder="Ad veya TC ile Ara..." value={arama} onChange={(e) => setArama(e.target.value)} style={{ maxWidth: '300px', marginBottom: 0 }} />
       </div>
 
       <div className="table-container" style={{ animation: 'slideUp 0.6s ease forwards' }}>
@@ -435,32 +458,32 @@ function AdminPaneli() {
             </tr>
           </thead>
           <tbody>
-            {filtrelenmisKayitlar.map(kayit => {
+            {gosterilecekKayitlar.map(kayit => {
               const d = durumRenkGetir(kayit.durum);
               return (
                 <tr key={kayit.id}>
-                  <td style={{ color: '#64748b', fontWeight: 600 }}>#{kayit.id}</td>
-                  <td><strong>{kayit.danisman_ad}</strong></td>
+                  <td style={{ color: 'var(--text-muted)', fontWeight: 600 }}>#{kayit.id}</td>
+                  <td><strong style={{ color: 'var(--text-main)' }}>{kayit.danisman_ad}</strong></td>
                   <td>
-                    {kayit.musteri_ad_soyad}<br/>
-                    <span style={{ color: '#64748b', fontSize: '13px' }}>TC: {kayit.musteri_tc}</span>
+                    <span style={{ color: 'var(--text-main)' }}>{kayit.musteri_ad_soyad}</span><br/>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>TC: {kayit.musteri_tc}</span>
                   </td>
                   <td>
-                    {kayit.tasinmaz_adres}<br/>
-                    <strong style={{ color: '#0f172a' }}>{kayit.tasinmaz_ada_parsel}</strong>
+                    <span style={{ color: 'var(--text-main)' }}>{kayit.tasinmaz_adres}</span><br/>
+                    <strong style={{ color: '#007bff' }}>{kayit.tasinmaz_ada_parsel}</strong>
                   </td>
                   <td>
-                    {kayit.islem_turu}<br/>
+                    <span style={{ color: 'var(--text-main)' }}>{kayit.islem_turu}</span><br/>
                     <strong style={{ color: '#ef4444' }}>{kayit.bedel} TL</strong>
                   </td>
                   <td><span className={d.sinif}>{d.etiket}</span></td>
-                  <td style={{ color: '#64748b', fontSize: '13px' }}>
+                  <td style={{ color: 'var(--text-muted)', fontSize: '13px' }}>
                     {kayit.onay_zamani && kayit.onay_zamani.Valid ? kayit.onay_zamani.String : '-'} <br/>
                     {kayit.musteri_ip && kayit.musteri_ip.Valid ? `IP: ${kayit.musteri_ip.String}` : ''}
                   </td>
                   <td>
                     {kayit.durum === 'onaylandi' && (
-                      <button onClick={() => pdfIndir(kayit)} className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '13px', background: '#f8fafc' }}>
+                      <button onClick={() => pdfIndir(kayit)} className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '13px' }}>
                         PDF İndir
                       </button>
                     )}
@@ -468,20 +491,66 @@ function AdminPaneli() {
                 </tr>
               )
             })}
-            {filtrelenmisKayitlar.length === 0 && (
-              <tr><td colSpan="8" style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Sistemde kayıt bulunamadı.</td></tr>
+            {gosterilecekKayitlar.length === 0 && (
+              <tr><td colSpan="8" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Sistemde kayıt bulunamadı.</td></tr>
             )}
           </tbody>
         </table>
+        
+        {/* SAYFALAMA KONTROLLERİ */}
+        {toplamSayfa > 1 && (
+          <div className="pagination">
+            <button 
+              className="page-btn" 
+              onClick={() => setMevcutSayfa(prev => Math.max(prev - 1, 1))} 
+              disabled={mevcutSayfa === 1}>
+              Önceki
+            </button>
+            <span className="page-info">Sayfa {mevcutSayfa} / {toplamSayfa}</span>
+            <button 
+              className="page-btn" 
+              onClick={() => setMevcutSayfa(prev => Math.min(prev + 1, toplamSayfa))} 
+              disabled={mevcutSayfa === toplamSayfa}>
+              Sonraki
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
+// --------------------------------------------------------
+// ANA APP BİLEŞENİ (TEMA MOTORU BURADA)
+// --------------------------------------------------------
 function App() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Tarayıcı açıldığında son seçilen temayı hafızadan çeker
+  useEffect(() => {
+    const kayitliTema = localStorage.getItem('asilEmlakTema');
+    if (kayitliTema === 'dark') {
+      setDarkMode(true);
+      document.body.classList.add('dark-mode');
+    }
+  }, []);
+
+  // Butona basıldığında temayı değiştirir ve hafızaya kaydeder
+  const toggleDarkMode = () => {
+    if (darkMode) {
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('asilEmlakTema', 'light');
+      setDarkMode(false);
+    } else {
+      document.body.classList.add('dark-mode');
+      localStorage.setItem('asilEmlakTema', 'dark');
+      setDarkMode(true);
+    }
+  };
+
   return (
     <>
-      <YanMenu />
+      <YanMenu darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       <Routes>
         <Route path="/" element={<SahaPaneli />} />
         <Route path="/belge" element={<BelgeSayfasi />} />
