@@ -355,7 +355,7 @@ function SahaPaneli() {
             </button>
 
             {/* WHATSAPP BUTONU DİZAYNI DÜZELTİLDİ: Flex ve Ortalama eklendi */}
-            <a href={`https://wa.me/${wpFormatli}?text=${wpMesaj}`} target="_blank" rel="noreferrer" className="btn btn-block mt-3" style={{ background: '#25D366', color: '#ffffff', padding: '16px', fontSize: '1rem', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: '0 6px 15px rgba(37, 211, 102, 0.3)', border: 'none', borderRadius: '12px' }}>
+            <a href={`https://wa.me/${wpFormatli}?text=${wpMesaj}`} target="_blank" rel="noreferrer" className="btn mt-3" style={{ margin: '0 auto', maxWidth: '250px', background: '#25D366', color: '#ffffff', padding: '14px', fontSize: '15px', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: '0 6px 15px rgba(37, 211, 102, 0.3)', border: 'none', borderRadius: '12px' }}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
               WhatsApp ile Gönder
             </a>
