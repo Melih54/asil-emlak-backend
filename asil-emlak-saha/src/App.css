@@ -36,6 +36,11 @@ body, html {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.4s ease, color 0.4s ease; 
+  min-height: 100vh; /* SİHİRLİ DOKUNUŞ: Sayfayı her zaman en az ekran boyu kadar uzatır! */
+}
+
+#root {
+  min-height: 100vh; /* React'in ana kutusunu da tam ekrana yayar */
 }
 
 /* --- YÜZEN KARTLAR (GLASSMORPHISM) --- */
@@ -108,10 +113,19 @@ input:focus, select:focus, textarea:focus {
 }
 
 .otp-input { 
-  max-width: 260px; padding: 20px; font-size: 40px; text-align: center; 
-  letter-spacing: 16px; border: 2px solid #ef4444 !important; 
-  font-weight: 800; border-radius: var(--radius-md); 
-  margin: 0 auto 24px auto; display: block; box-shadow: var(--brand-shadow);
+  width: 100%;
+  max-width: 340px; /* 6 Hane rahatça sığsın diye genişletildi */
+  padding: 16px; 
+  font-size: 38px; 
+  text-align: center; 
+  letter-spacing: 12px; /* Rakam arası boşluk ideal seviyeye çekildi */
+  border: 2px solid #ef4444 !important; 
+  font-weight: 800; 
+  border-radius: var(--radius-md); 
+  margin: 0 auto 24px auto; 
+  display: block; 
+  box-shadow: var(--brand-shadow);
+  box-sizing: border-box; /* Kutunun dışa doğru taşmasını engeller */
 }
 
 /* --- PREMIUM BUTONLAR --- */
