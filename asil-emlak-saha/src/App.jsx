@@ -145,7 +145,6 @@ function BelgeSayfasi() {
   return (
     <div className="container container-md">
       <div className="card" style={{ fontFamily: 'serif', lineHeight: '1.6', color: '#333', padding: '40px', background: '#fff' }}>
-        {/* PDF Çıktısı alırken formun bozulmaması için belge içerisindeki arkaplanı özellikle beyaz (#fff) ve metni koyu (#333) bıraktık */}
         <div style={{ borderBottom: '2px solid #333', paddingBottom: '10px', marginBottom: '20px', textAlign: 'center' }}>
           <img src="/logo.png" alt="Asil Emlak Logo" style={{ height: '60px', objectFit: 'contain', marginBottom: '10px' }} onError={(e) => e.target.style.display = 'none'} />
           <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>TAŞINMAZ YER GÖSTERME SÖZLEŞMESİ</h2>
@@ -192,6 +191,11 @@ function SahaPaneli() {
 
   const [form, setForm] = useState({ danisman_id: '', musteri_ad_soyad: '', musteri_telefon: '', musteri_tc: '', tasinmaz_adres: '', tasinmaz_ada_parsel: '', islem_turu: 'Satış', bedel: '' });
   const [onayKodu, setOnayKodu] = useState('');
+
+  // WP için telefon numarası formatlama (Saha Paneli İçin)
+  const wpTel = form.musteri_telefon.replace(/\D/g, '');
+  const wpFormatli = wpTel.length === 10 ? '90' + wpTel : (wpTel.startsWith('0') ? '9' + wpTel : wpTel);
+  const wpMesaj = encodeURIComponent(`Merhaba ${form.musteri_ad_soyad}, Asil Emlak yer gösterme sözleşmeniz sisteme girilmiş ve onay kodunuz SMS olarak iletilmiştir. Belgenin bir örneğini bu linkten inceleyebilirsiniz: https://asil-emlak-backend.vercel.app/belge`);
 
   useEffect(() => {
     fetch('https://asil-emlak-api.onrender.com/api/danismanlar')
@@ -344,7 +348,16 @@ function SahaPaneli() {
             
             <input type="text" maxLength="6" required placeholder="000000" value={onayKodu} onChange={(e) => setOnayKodu(e.target.value)} className="otp-input" />
             
-            <button type="submit" className="btn btn-success btn-block mt-4" style={{ padding: '18px', fontSize: '1.1rem' }}>SÖZLEŞMEYİ MÜHÜRLE</button>
+            <button type="submit" className="btn btn-success btn-block mt-4" style={{ padding: '18px', fontSize: '1.1rem' }}>
+              SÖZLEŞMEYİ MÜHÜRLE
+            </button>
+
+            {/* YENİ: WHATSAPP İLE HATIRLATMA BUTONU */}
+            <a href={`https://wa.me/${wpFormatli}?text=${wpMesaj}`} target="_blank" rel="noreferrer" className="btn btn-block mt-3" style={{ background: '#25D366', color: '#fff', padding: '16px', fontSize: '1rem', textDecoration: 'none' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+              WhatsApp'tan Hatırlat
+            </a>
+
             <button type="button" onClick={() => setAdim(1)} className="btn btn-secondary btn-block mt-3" style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}>İptal Et</button>
           </div>
         </form>
@@ -354,7 +367,7 @@ function SahaPaneli() {
 }
 
 // --------------------------------------------------------
-// 3. SAYFA: YÖNETİCİ (ADMIN) PANELİ (SAYFALAMALI)
+// 3. SAYFA: YÖNETİCİ (ADMIN) PANELİ (SAYFALAMALI + GPS + WP)
 // --------------------------------------------------------
 function AdminPaneli() {
   const [kayitlar, setKayitlar] = useState([]);
@@ -373,7 +386,6 @@ function AdminPaneli() {
       .catch(err => console.error("Kayıtlar çekilemedi", err));
   }, []);
 
-  // Arama yapıldığında kullanıcıyı otomatik 1. sayfaya atar
   useEffect(() => {
     setMevcutSayfa(1);
   }, [arama]);
@@ -384,7 +396,6 @@ function AdminPaneli() {
     return adSoyad.toLowerCase().includes(arama.toLowerCase()) || tcNo.includes(arama);
   });
 
-  // SAYFALAMA MATEMATİĞİ
   const sonKayitIndeksi = mevcutSayfa * kayitBasinaSayfa;
   const ilkKayitIndeksi = sonKayitIndeksi - kayitBasinaSayfa;
   const gosterilecekKayitlar = filtrelenmisKayitlar.slice(ilkKayitIndeksi, sonKayitIndeksi);
@@ -396,6 +407,15 @@ function AdminPaneli() {
       case 'bekliyor': return { sinif: 'badge badge-warning', etiket: 'Bekliyor' };
       default: return { sinif: 'badge', etiket: durum };
     }
+  };
+
+  // Admin tablosu için WP telefon numarası formatlama
+  const adminWpFormatla = (tel) => {
+    if (!tel) return '';
+    let clean = tel.replace(/\D/g, '');
+    if (clean.length === 10) return '90' + clean;
+    if (clean.length === 11 && clean.startsWith('0')) return '9' + clean;
+    return clean.startsWith('90') ? clean : '90' + clean;
   };
 
   const pdfIndir = (kayit) => {
@@ -460,6 +480,10 @@ function AdminPaneli() {
           <tbody>
             {gosterilecekKayitlar.map(kayit => {
               const d = durumRenkGetir(kayit.durum);
+              
+              // Konum var mı ve geçerli bir koordinat mı diye kontrol ediyoruz
+              const konumGecerliMi = kayit.konum && kayit.konum.Valid && kayit.konum.String.includes(',');
+
               return (
                 <tr key={kayit.id}>
                   <td style={{ color: 'var(--text-muted)', fontWeight: 600 }}>#{kayit.id}</td>
@@ -477,13 +501,30 @@ function AdminPaneli() {
                     <strong style={{ color: '#ef4444' }}>{kayit.bedel} TL</strong>
                   </td>
                   <td><span className={d.sinif}>{d.etiket}</span></td>
+                  
+                  {/* YENİ: GPS HARİTA LİNKİ BURAYA EKLENDİ */}
                   <td style={{ color: 'var(--text-muted)', fontSize: '13px' }}>
                     {kayit.onay_zamani && kayit.onay_zamani.Valid ? kayit.onay_zamani.String : '-'} <br/>
                     {kayit.musteri_ip && kayit.musteri_ip.Valid ? `IP: ${kayit.musteri_ip.String}` : ''}
+                    
+                    {konumGecerliMi && (
+                      <a href={`https://maps.google.com/?q=${kayit.konum.String.replace(/\s/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#10b981', textDecoration: 'none', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px' }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        Haritada Gör
+                      </a>
+                    )}
                   </td>
-                  <td>
+                  
+                  {/* YENİ: WHATSAPP VE PDF BUTONLARI */}
+                  <td style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <a href={`https://wa.me/${adminWpFormatla(kayit.musteri_telefon)}?text=${encodeURIComponent(`Merhaba ${kayit.musteri_ad_soyad}, Asil Emlak yer gösterme belgenize bu linkten ulaşabilirsiniz: https://asil-emlak-backend.vercel.app/belge`)}`} target="_blank" rel="noreferrer" className="btn" style={{ padding: '6px 10px', fontSize: '12px', background: '#25D366', color: '#fff', textDecoration: 'none' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                      WhatsApp
+                    </a>
+                    
                     {kayit.durum === 'onaylandi' && (
-                      <button onClick={() => pdfIndir(kayit)} className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '13px' }}>
+                      <button onClick={() => pdfIndir(kayit)} className="btn btn-secondary" style={{ padding: '6px 10px', fontSize: '12px' }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                         PDF İndir
                       </button>
                     )}
@@ -497,22 +538,11 @@ function AdminPaneli() {
           </tbody>
         </table>
         
-        {/* SAYFALAMA KONTROLLERİ */}
         {toplamSayfa > 1 && (
           <div className="pagination">
-            <button 
-              className="page-btn" 
-              onClick={() => setMevcutSayfa(prev => Math.max(prev - 1, 1))} 
-              disabled={mevcutSayfa === 1}>
-              Önceki
-            </button>
+            <button className="page-btn" onClick={() => setMevcutSayfa(prev => Math.max(prev - 1, 1))} disabled={mevcutSayfa === 1}>Önceki</button>
             <span className="page-info">Sayfa {mevcutSayfa} / {toplamSayfa}</span>
-            <button 
-              className="page-btn" 
-              onClick={() => setMevcutSayfa(prev => Math.min(prev + 1, toplamSayfa))} 
-              disabled={mevcutSayfa === toplamSayfa}>
-              Sonraki
-            </button>
+            <button className="page-btn" onClick={() => setMevcutSayfa(prev => Math.min(prev + 1, toplamSayfa))} disabled={mevcutSayfa === toplamSayfa}>Sonraki</button>
           </div>
         )}
       </div>
@@ -520,13 +550,9 @@ function AdminPaneli() {
   )
 }
 
-// --------------------------------------------------------
-// ANA APP BİLEŞENİ (TEMA MOTORU BURADA)
-// --------------------------------------------------------
 function App() {
   const [darkMode, setDarkMode] = useState(false);
 
-  // Tarayıcı açıldığında son seçilen temayı hafızadan çeker
   useEffect(() => {
     const kayitliTema = localStorage.getItem('asilEmlakTema');
     if (kayitliTema === 'dark') {
@@ -535,7 +561,6 @@ function App() {
     }
   }, []);
 
-  // Butona basıldığında temayı değiştirir ve hafızaya kaydeder
   const toggleDarkMode = () => {
     if (darkMode) {
       document.body.classList.remove('dark-mode');
