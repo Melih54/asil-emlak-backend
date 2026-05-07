@@ -426,41 +426,42 @@ function AdminPaneli() {
     const musteriTel = telFormatla(kayit.musteri_telefon);
     const danismanTel = telFormatla(kayit.danisman_telefon);
 
-    // Satır aralıkları ve boşluklar, içeriğin tek bir A4 kağıdına tam oturacağı şekilde milimetrik olarak optimize edildi.
+    // İÇERİK YÜKSEKLİĞİ SIKIŞTIRILDI: Tek sayfaya garantili sığması için font ve satır aralıkları optimize edildi.
     const htmlIcerik = `
-      <div style="width: 750px; padding: 20px; font-family: 'Times New Roman', serif; font-size: 14px; line-height: 1.4; color: #000; background: #fff; box-sizing: border-box;">
-        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
-          <h2 style="margin: 0; font-size: 20px; font-weight: bold;">TAŞINMAZ YER GÖSTERME SÖZLEŞMESİ</h2>
+      <div style="width: 790px; padding: 10px 30px; font-family: 'Times New Roman', serif; font-size: 13px; line-height: 1.35; color: #000; background: #fff; box-sizing: border-box;">
+        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 12px;">
+          <h2 style="margin: 0; font-size: 19px; font-weight: bold;">TAŞINMAZ YER GÖSTERME SÖZLEŞMESİ</h2>
         </div>
         
-        <h3 style="font-size: 16px; text-decoration: underline; margin-bottom: 5px;">MADDE 1 - TARAFLAR</h3>
-        <p style="margin-bottom: 5px;"><strong>1.1. Sorumlu Emlak İşletmesi</strong><br/>İşletme Adı: Asil Emlak Düzce<br/>İşletme Adresi: [AZMİMİLLİ MAHALLESİ AYDINPINAR CADDESİ NO:19/A MERKEZ DÜZCE]<br/>İşletme Yetki Belgesi Numarası: 8100235-001</p>
-        <p style="margin-bottom: 5px;"><strong>1.2. Sorumlu Emlak Danışmanı</strong><br/>Adı Soyadı: ${kayit.danisman_ad}<br/>İletişim Bilgisi: ${danismanTel}</p>
-        <p style="margin-bottom: 5px;"><strong>1.3. Kiracı/Alıcı Adayı</strong><br/>Adı Soyadı: ${kayit.musteri_ad_soyad}<br/>TC Kimlik No: ${kayit.musteri_tc}<br/>İletişim Bilgisi: ${musteriTel}</p>
+        <h3 style="font-size: 15px; text-decoration: underline; margin-bottom: 4px;">MADDE 1 - TARAFLAR</h3>
+        <p style="margin-bottom: 4px;"><strong>1.1. Sorumlu Emlak İşletmesi</strong><br/>İşletme Adı: Asil Emlak Düzce<br/>İşletme Adresi: [AZMİMİLLİ MAHALLESİ AYDINPINAR CADDESİ NO:19/A MERKEZ DÜZCE]<br/>İşletme Yetki Belgesi Numarası: 8100235-001</p>
+        <p style="margin-bottom: 4px;"><strong>1.2. Sorumlu Emlak Danışmanı</strong><br/>Adı Soyadı: ${kayit.danisman_ad}<br/>İletişim Bilgisi: ${danismanTel}</p>
+        <p style="margin-bottom: 4px;"><strong>1.3. Kiracı/Alıcı Adayı</strong><br/>Adı Soyadı: ${kayit.musteri_ad_soyad}<br/>TC Kimlik No: ${kayit.musteri_tc}<br/>İletişim Bilgisi: ${musteriTel}</p>
 
-        <h3 style="font-size: 16px; text-decoration: underline; margin-top: 15px; margin-bottom: 5px;">MADDE 2 - SÖZLEŞMENİN KONUSU</h3>
-        <p style="text-align: justify; margin-bottom: 8px;"><strong>2.1.</strong> SORUMLU EMLAK DANIŞMANI, üstlendiği taşınmazın kiralanması/satılması sözleşmesinin yapılması imkanını hazırlama görevi çerçevesinde; taşınmazı kiralama/satın alma amacıyla KİRACI ADAYI/ALICI ADAYI'na gösterdiğini kabul ve taahhüt eder.</p>
-        <p style="text-align: justify; margin-bottom: 8px;"><strong>2.2.</strong> KİRACI ADAYI/ALICI ADAYI; her ne suretle olursa olsun taşınmazın bizatihi kendisi adına, eşi, çocukları, 3. derece dahil kan ve sıhri hısımlarının adına veya ortağı olduğu şirket adına kiralandığı/satıldığı taktirde; <strong>${islemMetni}</strong> komisyon olarak Sorumlu Emlak Danışmanı'na ödeyeceğini kabul ve taahhüt eder.</p>
-        <p style="margin-bottom: 8px;"><strong>2.3. Taşınmaz Bilgileri</strong><br/>Adresi: ${kayit.tasinmaz_adres}<br/>Ada/Parsel: ${kayit.tasinmaz_ada_parsel}<br/>İşlem Türü ve Bedeli: ${kayit.islem_turu} - <strong>${kayit.bedel} TL</strong></p>
+        <h3 style="font-size: 15px; text-decoration: underline; margin-top: 12px; margin-bottom: 4px;">MADDE 2 - SÖZLEŞMENİN KONUSU</h3>
+        <p style="text-align: justify; margin-bottom: 6px;"><strong>2.1.</strong> SORUMLU EMLAK DANIŞMANI, üstlendiği taşınmazın kiralanması/satılması sözleşmesinin yapılması imkanını hazırlama görevi çerçevesinde; taşınmazı kiralama/satın alma amacıyla KİRACI ADAYI/ALICI ADAYI'na gösterdiğini kabul ve taahhüt eder.</p>
+        <p style="text-align: justify; margin-bottom: 6px;"><strong>2.2.</strong> KİRACI ADAYI/ALICI ADAYI; her ne suretle olursa olsun taşınmazın bizatihi kendisi adına, eşi, çocukları, 3. derece dahil kan ve sıhri hısımlarının adına veya ortağı olduğu şirket adına kiralandığı/satıldığı taktirde; <strong>${islemMetni}</strong> komisyon olarak Sorumlu Emlak Danışmanı'na ödeyeceğini kabul ve taahhüt eder.</p>
+        <p style="margin-bottom: 6px;"><strong>2.3. Taşınmaz Bilgileri</strong><br/>Adresi: ${kayit.tasinmaz_adres}<br/>Ada/Parsel: ${kayit.tasinmaz_ada_parsel}<br/>İşlem Türü ve Bedeli: ${kayit.islem_turu} - <strong>${kayit.bedel} TL</strong></p>
 
-        <h3 style="font-size: 16px; text-decoration: underline; margin-top: 15px; margin-bottom: 5px;">MADDE 3 - DİJİTAL ONAY VE KVKK</h3>
-        <p style="text-align: justify; margin-bottom: 15px;">Bu sözleşme, müşteri tarafından SMS ile iletilen onay kodunun sisteme girilmesiyle yasal olarak mühürlenmiştir. 6698 Sayılı KVKK kapsamında verilerin işlenmesine açık rıza gösterilmiştir.</p>
+        <h3 style="font-size: 15px; text-decoration: underline; margin-top: 12px; margin-bottom: 4px;">MADDE 3 - DİJİTAL ONAY VE KVKK</h3>
+        <p style="text-align: justify; margin-bottom: 12px;">Bu sözleşme, müşteri tarafından SMS ile iletilen onay kodunun sisteme girilmesiyle yasal olarak mühürlenmiştir. 6698 Sayılı KVKK kapsamında verilerin işlenmesine açık rıza gösterilmiştir.</p>
         
-        <div style="padding: 15px; border: 2px solid #28a745; border-radius: 8px; text-align: center; background-color: #f8fff9;">
-          <h4 style="margin: 0 0 8px 0; color: #28a745; font-size: 16px;">✓ DİJİTAL İMZA MÜHRÜ</h4>
-          <p style="margin: 3px 0; font-size: 13px;"><strong>Onay Zamanı:</strong> ${kayit.onay_zamani && kayit.onay_zamani.Valid ? kayit.onay_zamani.String : '-'}</p>
-          <p style="margin: 3px 0; font-size: 13px;"><strong>Cihaz GPS Koordinatı:</strong> ${kayit.konum && kayit.konum.Valid ? kayit.konum.String : 'Alınamadı'}</p>
-          <p style="margin: 3px 0; font-size: 13px;"><strong>GSM OTP Doğrulaması:</strong> ${musteriTel} numaralı telefona iletilen eşsiz şifre sisteme girilerek kimlik teyidi sağlanmıştır.</p>
-          <p style="margin: 10px 0 0 0; font-size: 11px; color: #666;">Bu belge Asil Emlak Saha Otomasyonu tarafından oluşturulmuştur.</p>
+        <div style="padding: 10px; border: 2px solid #28a745; border-radius: 8px; text-align: center; background-color: #f8fff9;">
+          <h4 style="margin: 0 0 6px 0; color: #28a745; font-size: 15px;">✓ DİJİTAL İMZA MÜHRÜ</h4>
+          <p style="margin: 2px 0; font-size: 12px;"><strong>Onay Zamanı:</strong> ${kayit.onay_zamani && kayit.onay_zamani.Valid ? kayit.onay_zamani.String : '-'}</p>
+          <p style="margin: 2px 0; font-size: 12px;"><strong>Cihaz GPS Koordinatı:</strong> ${kayit.konum && kayit.konum.Valid ? kayit.konum.String : 'Alınamadı'}</p>
+          <p style="margin: 2px 0; font-size: 12px;"><strong>GSM OTP Doğrulaması:</strong> ${musteriTel} numaralı telefona iletilen eşsiz şifre sisteme girilerek kimlik teyidi sağlanmıştır.</p>
+          <p style="margin: 8px 0 0 0; font-size: 10px; color: #666;">Bu belge Asil Emlak Saha Otomasyonu tarafından oluşturulmuştur.</p>
         </div>
       </div>
     `;
 
+    // KENAR BOŞLUKLARI (MARGIN) KISILDI
     const ayarlar = { 
-      margin: [10, 10, 10, 10], // Kenar boşlukları mm cinsinden ayarlandı
+      margin: [5, 5, 5, 5], 
       filename: `YerGosterme_${kayit.musteri_ad_soyad.replace(/ /g, '_')}_${kayit.id}.pdf`, 
-      image: { type: 'jpeg', quality: 0.98 }, 
-      html2canvas: { scale: 2, windowWidth: 800 }, 
+      image: { type: 'jpeg', quality: 1 }, 
+      html2canvas: { scale: 2, windowWidth: 820 }, 
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
     };
 
